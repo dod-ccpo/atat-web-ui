@@ -96,7 +96,11 @@
                 >
                   <v-col>
                     <span class="_label">{{ item.label }}</span>
-                    <span class="_description" v-html="item.description"></span>
+                    <span 
+                      v-if="showDescriptions" 
+                      class="_description" 
+                      v-html="item.description"
+                    ></span>
                   </v-col>
                   <v-col>
                     <v-radio
@@ -171,7 +175,6 @@ class PortfolioDetails extends Vue {
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
-    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
@@ -222,12 +225,9 @@ class PortfolioDetails extends Vue {
     return false;
   }
 
-
   public get selectedPackage():string {
     return PortfolioStore.selectedAcquisitionPackageSysId
   }
-
-
 
   public get currentData(): Partial<PortfolioProvisioningObj> {
     return {
@@ -271,6 +271,10 @@ class PortfolioDetails extends Vue {
   public unclassifiedILsSelected: string[] = [];
   public unclassifiedILsInTaskOrder: string[] = [];
   public unclassifiedErrorOnContinue = false;
+  
+  public get showDescriptions(): boolean {
+    return this.unclassifiedILsInTaskOrder.length > 1;
+  }
 
   public radioGroupUpdate(index: number): void {
     const IL = this.CSPProvisioningData[index].highest_information_protection_level;
@@ -347,6 +351,7 @@ class PortfolioDetails extends Vue {
       const env: Partial<ProvisioningEnv> = {
         cspName: c.name,
         isMigration: undefined,
+        il: c.highest_information_protection_level,
       }
       envs?.push(env);
     });

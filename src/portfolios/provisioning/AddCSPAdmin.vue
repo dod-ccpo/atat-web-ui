@@ -305,13 +305,14 @@ import {
   ClassificationLevels,
   DataTableHeader,
   PortfolioAdmin,
-  PortfolioProvisioning,
-  SelectedPortfolioEnv,
+  PortfolioProvisioningObj,
+  SaveOnLeaveRefs,
+  // SelectedPortfolioEnv,
   SlideoutPanelContent,
 } from "../../../types/Global";
 import PortfolioStore from "@/store/portfolio";
 import _ from "lodash";
-import { To, From, SaveOnLeaveRefs, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { To, From, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 
 import { shallowRef } from "vue";
@@ -334,9 +335,13 @@ class AddCSPAdmin extends Vue {
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs,
+      nextTick: this.$nextTick,
+    }).catch()
   }
+
+  public portfolioProvisioningObj: Partial<PortfolioProvisioningObj> = {};
 
   public admins: PortfolioAdmin[] = [];
   public cspLong = "";
@@ -468,8 +473,11 @@ class AddCSPAdmin extends Vue {
     // this.$validators.required("Please enter your administrator’s 10-digit DoD ID.")
   ]
 
-  get Form(): typeof Vue & { validate: () => boolean } {
-    return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
+  // get Form(): typeof Vue & { validate: () => boolean } {
+  //   return this.$refs.CSPAdminForm as typeof Vue & { validate: () => boolean };
+  // }
+  get Form(): SaveOnLeaveRefs['form'] {
+    return this.$refs.form
   }
 
   public get tsEmailHelpText(): string {
@@ -520,10 +528,11 @@ class AddCSPAdmin extends Vue {
     });
   }
 
-  public get currentData(): PortfolioAdmin[] {
-    return this.admins;
+  public get currentData(): Partial<PortfolioProvisioningObj> {
+    // return this.admins;
+    return this.portfolioProvisioningObj;
   }
-  public savedData: PortfolioAdmin[] = [];
+  public savedData: Partial<PortfolioProvisioningObj> = {};
 
   public openSlideoutPanel(e: Event): void {
     if (e?.currentTarget) {
@@ -541,31 +550,36 @@ class AddCSPAdmin extends Vue {
   }
 
   public async AddCSPAdmin(): Promise<void> {
-    const hasUnclassifiedAccess
-      = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
-    const hasScrtAccess = this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
-    const hasTSAccess = this.selectedClassificationLevels.includes(this.tsStr) ? "YES" : "NO";
+    debugger;
+    // const hasUnclassifiedAccess
+    //   = this.selectedClassificationLevels.includes(this.unclStr) ? "YES" : "NO";
+    // const hasScrtAccess = 
+    // this.selectedClassificationLevels.includes(this.scrtStr) ? "YES" : "NO";
+    // const hasTSAccess = this.selectedClassificationLevels.includes(this.tsStr) ? "YES" : "NO";
 
-    const admin: PortfolioAdmin = {
-      DoDId: this.adminDoDId,
-      hasUnclassifiedAccess,
-      hasScrtAccess,
-      hasTSAccess,
-      unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
-      scrtEmail: hasScrtAccess ? this.scrtEmail : "",
-      tsEmail: hasTSAccess ? this.tsEmail : "",
-      impactLevels:this.selectedImpactLevels
-    };
-    const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
-    if (this.isEdit && this.editAdminIndex > -1) {
-      this.admins[this.editAdminIndex] = admin;
-    } else {
-      if (adminIndex > -1) {
-        this.admins[adminIndex] = admin;
-      } else {
-        this.admins.push(admin);
-      }
-    }
+    // const admin: PortfolioAdmin = {
+    //   DoDId: this.adminDoDId,
+    //   hasUnclassifiedAccess,
+    //   hasScrtAccess,
+    //   hasTSAccess,
+    //   unclassifiedEmail: hasUnclassifiedAccess ? this.unclassifiedEmail : "",
+    //   scrtEmail: hasScrtAccess ? this.scrtEmail : "",
+    //   tsEmail: hasTSAccess ? this.tsEmail : "",
+    //   impactLevels:this.selectedImpactLevels
+    // };
+    // const adminIndex = this.admins.findIndex(obj => obj.DoDId === this.adminDoDId);
+    // if (this.isEdit && this.editAdminIndex > -1) {
+    //   this.admins[this.editAdminIndex] = admin;
+    // } else {
+    //   if (adminIndex > -1) {
+    //     this.admins[adminIndex] = admin;
+    //   } else {
+    //     this.admins.push(admin);
+    //   }
+    // }
+    this.portfolioProvisioningObj.environments?.forEach(env => {
+      debugger;
+    })
 
     this.resetAdmin();
     this.buildTableData();
@@ -635,11 +649,10 @@ class AddCSPAdmin extends Vue {
     })
   }
 
-  public createILCheckboxes(impactLevels:SelectedPortfolioEnv[]): void {
+  public createILCheckboxes(impactLevels: string[]): void {
+    debugger;
     impactLevels.forEach(value => {
-      const il = value.value.split('_')[1].toUpperCase();
-      this.impactLevelCompareArray.push(value.value)
-      this.impactLevelOptions.push({id: il, label: il, value: value.value});
+      this.impactLevelOptions.push({id: value, label: value, value: value});
     })
   }
 
@@ -739,12 +752,17 @@ class AddCSPAdmin extends Vue {
     }
   }
 
+  public unclassifiedILs = ["IL2", "IL4", "IL5"];
+
   public async loadOnEnter(): Promise<void> {
     const storeData = PortfolioStore.portfolioProvisioningObj;
+    debugger;
 
     if (storeData) {
-      this.admins = _.cloneDeep(storeData.admins) || [];
-      this.savedData = _.cloneDeep(this.admins);
+      this.portfolioProvisioningObj = _.cloneDeep(storeData);
+      
+      // this.admins = _.cloneDeep(storeData.admins) || [];
+      this.savedData = _.cloneDeep(this.portfolioProvisioningObj);
       this.cspLong = storeData.cspLong as string;
       this.classificationLevels = storeData.classificationLevels || [];
       // if only one classification level available on the task order,
@@ -757,12 +775,21 @@ class AddCSPAdmin extends Vue {
         this.createClassificationCheckboxes();
       }
 
-      this.impactLevels = storeData.selectedILs || [];
-      if (storeData.selectedILs && storeData.selectedILs.length > 1) {
+      // this.impactLevels = storeData.selectedILs || [];
+      this.impactLevels = [];
+      storeData.environments?.forEach((env) => {
+        if (this.unclassifiedILs.includes(env.il as string) 
+          && env.isMigration !== null && env.isMigration !== undefined
+        ) {
+          this.impactLevels.push(env.il as string)
+        }
+      });
+      debugger;
+      if (this.impactLevels && this.impactLevels.length > 1) {
         this.showUnclassifiedILs = true
-        this.createILCheckboxes(storeData.selectedILs)
-      } else if (storeData.selectedILs && storeData.selectedILs.length === 1) {
-        this.selectedImpactLevels.push(storeData.selectedILs[0]);
+        this.createILCheckboxes(this.impactLevels)
+      } else if (this.impactLevels && this.impactLevels.length === 1) {
+        this.selectedImpactLevels.push(this.impactLevels[0]);
       }
       this.csp = storeData.csp || "";
 
@@ -787,7 +814,7 @@ class AddCSPAdmin extends Vue {
     await AcquisitionPackage.setDisableContinue(false);
     try {
       if (this.admins.length > 0) {
-        const data: PortfolioProvisioning = {
+        const data: PortfolioProvisioningObj = {
           admins: this.admins,
         }
         await PortfolioStore.setPortfolioProvisioning(data);

@@ -712,6 +712,7 @@ export interface PortfolioProvisioningObj extends EDAResponse {
 export interface ProvisioningEnv {
   cspName: string; // e.g., azure_il2_dev, azure_il6_dev, azure_ts_dev
   operators: PortfolioAdmin[];
+  il: string;
 
   // if isMigration null/undefined, DO NOT send env obj in provisioning API POST 
   isMigration: boolean | null | undefined; 
