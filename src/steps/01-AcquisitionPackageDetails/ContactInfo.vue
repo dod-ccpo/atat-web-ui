@@ -57,9 +57,10 @@ class ContactInfo extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
-    debugger;
     try {
       if (this.hasChanged()) {
+        this.currentContactData.type = "Primary Contact"
+        this.currentContactData.can_access_package = "true"
         await AcquisitionPackage.saveContactInfo({
           data: this.currentContactData,
           type: "Primary Contact",

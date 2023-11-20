@@ -24,7 +24,7 @@
         :value="_selectedRole"
         @update:value="_selectedRole = $event"
         :rules="[
-          $validators.required('Please enter your ' + corOrAcor + '’s role.'),
+          $validators.required('Please enter ' + contactString + ' role.'),
         ]"
         class="mb-10"
         @radioButtonSelected="contactTypeChange"
@@ -44,7 +44,7 @@
           @update:selectedValue="_selectedBranch = $event"
           :returnObject="true"
           :rules="[$validators.required(
-              'Please select your ' + corOrAcor + '’s service branch.'
+              'Please select ' + contactString + ' service branch.'
             )]"
         />
 
@@ -61,7 +61,7 @@
           :selectedItem="_selectedRank"
           @update:selectedItem="_selectedRank = $event"
           :rules = "[$validators.required(
-            'Please select your ' + corOrAcor + '’s rank.', undefined, true
+            'Please select ' + contactString + ' rank.', undefined, true
           )]"
           class="_input-max-width mb-7"
           icon="arrow_drop_down"
@@ -91,7 +91,7 @@
                 @update:value="_firstName = $event"
                 :rules="[
                   $validators.required(
-                    'Please enter your ' + corOrAcor + '’s first name.'
+                    'Please enter ' + contactString + ' first name.'
                   ),
                 ]"
               />
@@ -117,7 +117,7 @@
                 @update:value="_lastName = $event"
                 :rules="[
                   $validators.required(
-                    'Please enter your ' + corOrAcor + '’s last name.'
+                    'Please enter ' + contactString + ' last name.'
                   ),
                 ]"
               />
@@ -144,7 +144,7 @@
             :value="_title"
             @update:value="_title = $event"
             :rules="[
-              $validators.required('Please enter your title.')
+              $validators.required('Please enter ' + contactString + ' title.')
             ]"
           />
 
@@ -161,7 +161,7 @@
             @update:extensionValue="_phoneExt = $event"
             :rules="[
               $validators.required(
-                'Please enter your ' + corOrAcor + '’s phone number'
+                'Please enter ' + contactString + ' phone number'
               ),
               $validators.isPhoneNumberValid(_selectedPhoneCountry),
             ]"
@@ -178,7 +178,7 @@
             @update:value="_email = $event"
             :rules="[
               $validators.required(
-                'Please enter your ' + corOrAcor + '’s email address.'
+                'Please enter ' + contactString + ' email address.'
               ),
               $validators.isEmail(),
             ]"
@@ -193,7 +193,7 @@
             @update:dodaac="_dodaac = $event"
             :corOrAcor="corOrAcor"
             :rules="[ 
-              $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
+              $validators.required('Please enter ' + contactString + ' 6-character DoDAAC.'),
             ]"
           />
         </div>
@@ -301,13 +301,17 @@ class CorAcorContactInfoForm extends Vue {
       : 'What role best describes your ' + this.corOrAcor + '’s affiliation with the DoD?'
   }
 
-  // @Watch("_selectedBranch")
-  // public clearRank(newVal: SelectData, oldVal: SelectData): void{
-  //   const isOldValValid = Object.values(oldVal).every(v=>v!=="")
-  //   if (isOldValValid){
-  //     this._selectedRank =  { grade: "", name: "", sysId: ""}
-  //   }
-  // }
+  get contactString(): string{
+    return (this.isPrimaryContact ? "the primary POC" : "your " + this.corOrAcor) + "’s"
+  }
+
+  @Watch("_selectedBranch")
+  public clearRank(newVal: SelectData, oldVal: SelectData): void{
+    const isOldValValid = Object.values(oldVal).every(v=>v!=="")
+    if (isOldValValid){
+      this._selectedRank =  { grade: "", name: "", sysId: ""}
+    }
+  }
 
 }
 export default toNative(CorAcorContactInfoForm)

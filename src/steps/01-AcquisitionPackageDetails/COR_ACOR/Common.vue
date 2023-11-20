@@ -218,7 +218,6 @@ class CommonCorAcor extends Vue {
     const acqPkgId = AcquisitionPackage.acquisitionPackage
       ? AcquisitionPackage.acquisitionPackage.sys_id as string
       : "";
-    debugger;
     return {
       type: this.corOrAcor, // COR, ACOR
       role: this.selectedRole, // Military, Civilian
@@ -301,7 +300,6 @@ class CommonCorAcor extends Vue {
   }
 
   public async loadOnEnter(): Promise<void> {
-
     const branches = await ContactData.LoadMilitaryBranches();
     this.branchData = branches.map((choice) => {
       const text = `U.S. ${choice.label}`;
@@ -313,14 +311,13 @@ class CommonCorAcor extends Vue {
     });
 
     this.branchRanksData = ContactData.militaryAutoCompleteGroups;
-
-    let storeData = await AcquisitionPackage.getContact(this.corOrAcor);
+    
+    const contactType = this.isPrimaryContact ? "" : this.corOrAcor
+    let storeData = await AcquisitionPackage.getContact(contactType);
     storeData = convertColumnReferencesToValues(storeData);
     this.savedData = storeData;
-    debugger;
     if (storeData) {
       this.selectedRole = storeData.role;
-      debugger;
       if (this.selectedRole === "MILITARY") {
         const rankComp = storeData.rank_components;
         if (rankComp) {
