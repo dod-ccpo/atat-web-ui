@@ -26,7 +26,8 @@
               />
 
               <ATATAddressForm
-                ref="ATATAddressFormRef"
+                id="AddressFormContractingOffice"
+                ref="AddressFormContractingOfficeRef"
                 :selectedAddressType="selectedAddressType"
                 @update:selectedAddressType="selectedAddressType = $event"
                 :streetAddress1="streetAddress1"
@@ -93,14 +94,14 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component , Hook, toNative, Vue } from "vue-facing-decorator";
-import { From,  To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 
 import ATATAddressForm from "@/components/ATATAddressForm.vue";
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATDialog from "@/components/ATATDialog.vue";
 import ATATTextField from "../../components/ATATTextField.vue";
 
-import { RadioButton, SaveOnLeaveRefs, SelectData } from "types/Global";
+import { RadioButton, SelectData, SaveOnLeaveRefs } from "types/Global";
 
 import AcquisitionPackage, {StoreProperties} from "@/store/acquisitionPackage";
 import { AddressDTO } from "@/api/models";
@@ -120,7 +121,6 @@ import ContactData from "@/store/contactData";
 
 class ContractingOfficeInfo extends Vue {
 
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 

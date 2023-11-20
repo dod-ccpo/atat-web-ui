@@ -2,6 +2,7 @@
   <div v-if="isForm">
     <ATATTextField
       :id="corOrAcor + '_DoDAAC'"
+      :ref="corOrAcor + '_DoDAACRef'"
       class="_input-max-width"
       label="DoD Activity Address Code (DoDAAC)"
       tooltipText="A DoDAAC is a 6-character code that uniquely identifies a 

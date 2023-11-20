@@ -9,6 +9,7 @@
           </h1>
 
           <ATATRadioGroup
+            ref="HasAlternateCORRef"
             id="HasAlternateCOR"
             legend="Indicate if you have an ACOR"
             :legend-sr-only="true"
@@ -58,7 +59,6 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 class AlternateCOR extends Vue {
 
-    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
