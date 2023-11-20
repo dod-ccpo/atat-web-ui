@@ -55,7 +55,7 @@
 
             <div class="h2">2. Tell us about your cloud environments</div>
             <div 
-              class="text-base font-size-14 mb-10 copy-max-width" 
+              class="mb-10 copy-max-width" 
               v-html="envSectionHelpText"
             ></div>
 
@@ -66,6 +66,7 @@
                   :key="index"
                   class="_grid-header-col"
                   :class="{'': index > 0}"
+                  :cols="index === 0 ? 6 : 2"
                 >
                   <span class="_header-text">
                     {{ header.label }}
@@ -94,28 +95,27 @@
                   v-model="envsInTaskOrder[index].isMigration"
                   @update:modelValue="radioGroupUpdate(index)"
                 >
-                  <v-col>
+                  <v-col cols="6">
                     <span class="_label">{{ item.label }}</span>
                     <span 
-                      v-if="showDescriptions" 
                       class="_description" 
                       v-html="item.description"
                     ></span>
                   </v-col>
-                  <v-col>
+                  <v-col cols="2">
                     <v-radio
                       :name="item.id + 'Group'"
                       :value="false"
                       @blur="radioGroupBlurred(index)"
                     ></v-radio>
                   </v-col>
-                  <v-col>
+                  <v-col cols="2">
                     <v-radio
                       :name="item.id + 'Group'"
                       :value="true"
                     ></v-radio>
                   </v-col>
-                  <v-col>
+                  <v-col cols="2">
                     <v-radio
                       :name="item.id + 'Group'"
                       :value="null"
