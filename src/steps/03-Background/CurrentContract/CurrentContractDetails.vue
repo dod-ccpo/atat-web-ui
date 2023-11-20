@@ -253,7 +253,7 @@ import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
-import { hasChanges } from "@/helpers";
+import { formatDate, hasChanges } from "@/helpers";
 import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import { SaveOnLeaveRefs } from "types/Global";
@@ -435,11 +435,21 @@ class CurrentContract extends Vue {
       keys.forEach((key) => {
         const _key = key as keyof CurrentContractDTO
         if (Object.prototype.hasOwnProperty.call(this.currentContract, _key)){
+
+          //dates need to be formatted from iso to mmddyyyy
+          if ((_key as string).includes("_date") && this.currentContract[_key] !== ""){
+            const tempDate = formatDate(this.currentContract[_key] as string, "MMDDYYYY");
+            if (tempDate){
+              (this.currentContract[_key] as string)  = tempDate;
+            }
+          }
+
           // @ts-expect-error ts can't check for this.savedData properly here
           // and this code works as expected.
           this.savedData[_key] = this.currentContract[_key];
         }
       });
+      console.table(this.savedData)
     } 
     this.setHeadline();
   }
