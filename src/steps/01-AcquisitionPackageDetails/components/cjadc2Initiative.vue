@@ -10,6 +10,11 @@
         :items="radioGroupItems"
         name="cjadc2-initiative-radio-group"
         :rules="_rules"
+        @helpTextLinkClicked="helpTextLinkClicked"
+        :isHelpTextLinkExternal="true"        
+        @radioButtonSelected="radioButtonSelected"      
+        :help-text-link="helpTextLink"
+        :helpText="helpText"
       >
       </ATATRadioGroup>
 
