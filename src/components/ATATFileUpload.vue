@@ -11,6 +11,7 @@
       <v-file-input
         ref="atatFileUpload"
         :name="id + 'FileUpload'"
+        :style="'width:' + width + 'px !important'"
         :id="id + 'FileUpload'"
         :class="[
           { 'v-text-field--is-hovering': isHovering },
@@ -73,12 +74,14 @@
             v-else
             class="content-mini d-flex align-center width-100"
             @mousedown="fileUploadClicked"
+         
           >
             <div>
               <ATATSVGIcon
                 name="uploadFile"
-                :class="{ 'bg-disabled-dark': isFileUploadDisabled }"
+                id="uploadFile"
                 :width="40"
+                :color="uploadIconColor"
                 :height="50"
               />
             </div>
@@ -128,6 +131,7 @@
     <ATATFileList
       :validFiles="_validFiles"
       class="mt-5"
+      :width="width"
       :isFullSize="isFullSize"
       @update:isFullSize="isFullSize=$event"
       :multiplesAllowed="multiplesAllowed"
@@ -189,6 +193,7 @@ class ATATFileUpload extends Vue {
   // props
   @Prop({ default: 15 }) private truncateLength!: string;
   @Prop({ default: "" }) private id!: string;
+  @Prop({ default: "740" }) private width!: string;
   @Prop({ default: true }) private multiplesAllowed!: boolean;
   @Prop({ default: true }) private showAllErrors?: boolean;
   @Prop({ default: false }) private filesRequired?: boolean;
@@ -248,6 +253,10 @@ class ATATFileUpload extends Vue {
     return this._validFiles.length > 0 && this._invalidFiles.length === 0
       ? []
       : this.rules;
+  }
+
+  get uploadIconColor(): string{
+    return this.isFileUploadDisabled ? "disabled" :"base"
   }
 
   //Events
