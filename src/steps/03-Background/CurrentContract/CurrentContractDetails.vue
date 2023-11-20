@@ -16,7 +16,9 @@
             <h2 class="mb-5">
               1. Contract overview
             </h2>
-            <ContractNumber id="ContractNumber" 
+            <ContractNumber 
+              id="ContractNumber" 
+              ref="ContractNumberRef"
               :rules="[
                 $validators.required('Please enter a contract number.'),
                 $validators.isMaskValid(
@@ -33,7 +35,8 @@
               found on your awarded contract." />
 
             <TaskOrderNumber 
-            id="TaskOrderNumber" 
+            id="TaskOrderNumber"
+            ref="TaskOrderNumberRef"
             :value="currentContract.task_delivery_order_number" 
             @update:value="currentContract.task_delivery_order_number = $event"
             :optional="true"
@@ -50,7 +53,9 @@
                 spaces). Leave this field empty if your previous acquisition was only a contract, 
                 not an order placed under a contract." />
 
-            <LevelOfCompetition legend="What level of competition was used in this procurement?"
+            <LevelOfCompetition 
+              ref="LevelOfCompetitionRef"
+              legend="What level of competition was used in this procurement?"
               classes="copy-max-width mb-4 mt-3" 
               :competitiveStatus="currentContract.competitive_status"
               @update:competitiveStatus="currentContract.competitive_status = $event"
@@ -68,7 +73,7 @@
             </span>
             <div class="d-flex mt-4">
               <ATATDatePicker 
-                
+                ref="StartRef"
                 id="Start" 
                 :value="currentContract.contract_order_start_date" 
                 @update:value="currentContract.contract_order_start_date = $event"
@@ -96,6 +101,7 @@
                 
                <!-- NOTE: max date to be determined -->
               <ATATDatePicker 
+                ref="ExpirationARef"
                 id="Expiration" 
                 :value="currentContract.contract_order_expiration_date" 
                 @update:value="currentContract.contract_order_expiration_date = $event"
@@ -122,20 +128,23 @@
                 
             </div>
             <ATATErrorValidation
-                id="PoPValidation"
-                  :errorMessages=" [
-                    ...startDPSharedErrorMessages, 
-                    ...expirationDPSharedErrorMessages
-                  ]"
-                  :showAllErrors="false"
-                ></ATATErrorValidation>
+              id="PoPValidation"
+              :errorMessages=" [
+                ...startDPSharedErrorMessages, 
+                ...expirationDPSharedErrorMessages
+              ]"
+              :showAllErrors="false"
+            >
+            </ATATErrorValidation>
             <hr />
 
             <h2 class="mb-4">
               3. Contractor details
             </h2>
             <IncumbentContractorName 
-            id="IncumbentContractorName" :rules="[
+              id="IncumbentContractorName"
+              ref="IncumbentContractorNameRef"
+              :rules="[
                 $validators.required(
                   'Please enter the contractor’s name.'
                 ),
@@ -156,7 +165,8 @@
           </div>
           <div v-else class="copy-max-width">
             <IncumbentContractorName 
-            id="IncumbentContractorName" 
+              id="IncumbentContractorName"
+              ref="IncumbentContractorNameRef"
               :rules="[
                 $validators.required(
                   'Enter the contractor’s name.'
@@ -181,28 +191,39 @@
               class="_input-max-width mb-10" 
               label="Contract number" />
 
-            <TaskOrderNumber id="TaskDeliveryOrderNumber" 
-            :value="currentContract.task_delivery_order_number" 
-            @update:value="currentContract.task_delivery_order_number = $event"
-            :optional="true"
-            class="_input-max-width mb-10" 
-            label="Task/Delivery order number" 
-            :rules="[
-                $validators.isMaskValid(
-                  ['^([0-9a-zA-Z]{13})?$'],
-                  `Your task order number must be 13 alphanumeric characters.`,
-                  true
-                ),
-              ]"
-            tooltipText="Leave this field empty if your previous acquisition
-            was only a contract, not an order placed under a contract." />
+            <TaskOrderNumber 
+              id="TaskDeliveryOrderNumber"
+              ref="TaskDeliveryOrderNumberRef"
+              :value="currentContract.task_delivery_order_number" 
+              @update:value="currentContract.task_delivery_order_number = $event"
+              :optional="true"
+              class="_input-max-width mb-10" 
+              label="Task/Delivery order number" 
+              :rules="[
+                  $validators.isMaskValid(
+                    ['^([0-9a-zA-Z]{13})?$'],
+                    `Your task order number must be 13 alphanumeric characters.`,
+                    true
+                  ),
+                ]"
+              tooltipText="Leave this field empty if your previous acquisition
+              was only a contract, not an order placed under a contract."
+            />
 
-            <ATATDatePicker id="Expiration" 
+            <ATATDatePicker 
+              id="Expiration"
+              ref="ExpirationBRef"
+              :key="'Expiration'+rerenderExpirationComponent"
               :rules="[
                 $validators.required(
                   'Please enter your contract/order expiration date.'
                 ),
                 $validators.isDateValid('Please enter a valid date.'),
+                $validators.compareDatesAsc(
+                  new Date().toISOString(), 
+                  'The expiration date must be after today.',
+                  false,
+                ),
               ]" 
               :value="currentContract.contract_order_expiration_date" 
               @update:value="currentContract.contract_order_expiration_date = $event"
@@ -210,7 +231,8 @@
               :min="tomorrowDateISO"
               placeHolder="MM/DD/YYYY" 
               tooltipText="Use the period of performance end date for your task order. If you
-                  do not have a task order, use your contract end date." />
+                  do not have a task order, use your contract end date." 
+            />
           </div>
         </v-col>
       </v-row>
@@ -231,7 +253,7 @@ import BusinessSize from "@/steps/03-Background/components/BusinessSize.vue";
 import AcquisitionPackage, {initialCurrentContract, } from "@/store/acquisitionPackage";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import { CurrentContractDTO } from "@/api/models";
-import { hasChanges } from "@/helpers";
+import { formatDate, hasChanges } from "@/helpers";
 import { add, compareAsc, format, formatISO, subDays } from "date-fns";
 import TaskOrderNumber from "@/steps/03-Background/components/TaskOrderNumber.vue";
 import { SaveOnLeaveRefs } from "types/Global";
@@ -250,8 +272,6 @@ import { SaveOnLeaveRefs } from "types/Global";
 })
 
 class CurrentContract extends Vue {
-
- 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
@@ -270,6 +290,7 @@ class CurrentContract extends Vue {
   private isCurrent = false;
   private headline = "";
   private saveOnLeaveError: string| unknown = "";
+  private rerenderExpirationComponent = '';
 
   private setHeadline(): void {
     let contractState = "previous or current";
@@ -375,6 +396,7 @@ class CurrentContract extends Vue {
       this.isCurrent = this.currentContract.is_current as boolean;
     }
     this.setMinAndMaxDates();
+    this.rerenderExpirationComponent = 'rerender'
   }
 
   public async sortDataSource():Promise<void>{
@@ -413,11 +435,21 @@ class CurrentContract extends Vue {
       keys.forEach((key) => {
         const _key = key as keyof CurrentContractDTO
         if (Object.prototype.hasOwnProperty.call(this.currentContract, _key)){
+
+          //dates need to be formatted from iso to mmddyyyy
+          if ((_key as string).includes("_date") && this.currentContract[_key] !== ""){
+            const tempDate = formatDate(this.currentContract[_key] as string, "MMDDYYYY");
+            if (tempDate){
+              (this.currentContract[_key] as string)  = tempDate;
+            }
+          }
+
           // @ts-expect-error ts can't check for this.savedData properly here
           // and this code works as expected.
           this.savedData[_key] = this.currentContract[_key];
         }
       });
+      console.table(this.savedData)
     } 
     this.setHeadline();
   }
@@ -454,6 +486,7 @@ class CurrentContract extends Vue {
       this.saveOnLeaveError = error as string;
       console.log(error);
     }
+    console.log('saveonleave-current-contract-details: ', AcquisitionPackage.currentContracts)
     return true;
   }
 

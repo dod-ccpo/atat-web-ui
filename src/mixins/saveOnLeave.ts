@@ -31,7 +31,6 @@ export const validateAllForms = async (forms:SaveOnLeaveRefs): Promise<boolean> 
       }
     }
   }
-  console.log(isFormsValid)
   return isFormsValid.every(f=>f===true)
 }
 
