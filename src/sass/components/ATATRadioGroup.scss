@@ -279,6 +279,7 @@
 }
 
 ._radio-grid {
+  margin: 0 12px;
   .v-input__details {
     display: none;
   }
@@ -318,6 +319,9 @@
   }
   .v-row {
     border-bottom: 1px solid $base-lighter;
+    &._last-row {
+      border-bottom: none;
+    }
   }
   .v-col {
     display: flex;

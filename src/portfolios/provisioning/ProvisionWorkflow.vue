@@ -4,7 +4,7 @@
       <component :is="panelContent"></component>
     </ATATSlideoutPanel>
     <v-main class="_center-page-content _provisioning">
-      <div id="app-content" class="_app-content d-flex flex-column pt-16">
+      <div id="app-content" class="_app-content d-flex flex-column pt-8">
 				<div class="_app-content-wrap">
 					<div class="_app-content-padding">
 

@@ -15,18 +15,18 @@
                 information.
               </strong>
               </p>
-              <p v-else v-html="envSectionHelpText">
+              <p v-else v-html="envSectionHelpText" class="mb-10">
               </p>
             </div>
 
             <!-- if user didn't select an existing aquisition package with status "Waiting
               for taskorder" in previous step, get the portfolio name and associated agency -->
-            <div v-if="!selectedPackage" class="copy-max-width">
+            <div v-if="!selectedPackage" class="copy-max-width mt-10">
               <h2>1. Portfolio Details</h2>
               <ATATTextField 
                 ref="PortfolioTitleRef"
                 label="Portfolio title"
-                class="_input-max-width mb-10"
+                class="_input-max-width mb-10 mt-6"
                 :value="portfolioTitle"
                 @update:value="portfolioTitle = $event"
                 :rules="[
@@ -51,8 +51,11 @@
               />
             </div>
 
-            <div class="h2">2. Tell us about your cloud environments</div>
+            <hr v-if="!selectedPackage" />
+
+            <div class="h2" v-if="!selectedPackage">2. Tell us about your cloud environments</div>
             <div 
+              v-if="!selectedPackage"
               class="mb-10 copy-max-width" 
               v-html="envSectionHelpText"
             ></div>
@@ -270,6 +273,7 @@ class PortfolioDetails extends Vue {
   public unclassifiedILsInTaskOrder: string[] = [];
   public unclassifiedErrorOnContinue = false;
   public unclassifiedNotApplicableDisabled = false;
+  public unclassifiedNASelections = 0;
 
   public get showDescriptions(): boolean {
     return this.unclassifiedILsInTaskOrder.length > 1;
@@ -278,14 +282,17 @@ class PortfolioDetails extends Vue {
   public radioGroupUpdate(index: number): void {
     const IL = this.CSPEnvironmentData[index].highest_information_protection_level;
     const isUnclass = this.CSPEnvironmentData[index].classification_level === "U";
-    const selectionNotNull = this.envsInTaskOrder[index].isMigration !== null;
+    const selectionIsNA = this.envsInTaskOrder[index].isMigration === null;
     debugger;
-    if (isUnclass && !this.unclassifiedILsSelected.includes(IL) && selectionNotNull) {
+
+    if (isUnclass && !this.unclassifiedILsSelected.includes(IL) && !selectionIsNA) {
       this.unclassifiedILsSelected.push(IL);
       this.unclassifiedErrorOnContinue = false;
+    // } else if (isUnclass && selectionIsNA) {
+    //   const unclassSelections = 
     }
   }
-
+  
   public radioGroupBlurred(index: number): void {
     const blurredIL = this.CSPEnvironmentData[index].highest_information_protection_level;
     const isUnclass = this.CSPEnvironmentData[index].classification_level === "U";
@@ -324,9 +331,9 @@ class PortfolioDetails extends Vue {
         environments: this.portfolioProvisioningObj.environments,
       }
  
-      this.classificationLevelsInTaskOrderStr = this.getClassificationLevelsInTOString();
       this.classificationLevelsInTaskOrder = 
         this.portfolioProvisioningObj.classificationLevels as string[];
+      this.classificationLevelsInTaskOrderStr = this.getClassificationLevelsInTOString();
 
       this.envSectionHelpText = `Based on your task order details, you have
       funding for ${ this.classificationLevelsInTaskOrderStr }. For each option below, 
