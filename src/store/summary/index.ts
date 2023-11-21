@@ -597,21 +597,6 @@ export class SummaryStore extends VuexModule {
         && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
 
-    console.log('yup', {
-      hasProposedCSP,
-      hasJustification,
-      hasMinGovtRequirements,
-      one: await this.hasSoleSourceSituation(fairOpp),
-      two: await this.hasProcurement(fairOpp),
-      thre: fairOpp.requirement_impact !== "",
-      four: fairOpp.contract_action !== "",
-      five: await this.hasMarketResearchEfforts(fairOpp),
-      six: await this.hasMarketResearchConductors(fairOpp),
-      sev: await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp),
-      eig: await this.hasActionsToRemoveBarriers(fairOpp),
-      nin: await this.hasCertificationPOCS(fairOpp),
-    })
-
     return (
       hasProposedCSP
       && hasJustification
