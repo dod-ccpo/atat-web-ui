@@ -7,6 +7,7 @@ import {TABLENAME as ContactsTable} from "@/api/contacts";
 import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
 import {AutoCompleteItem, AutoCompleteItemGroups, RankData, SelectData,} from "types/Global";
 import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
+import AcquisitionPackage from "../acquisitionPackage";
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
@@ -279,6 +280,7 @@ export class ContactDataStore extends VuexModule {
   public async saveContact(contactDTO: ContactDTO): Promise<ContactDTO> {
     try {
       const sys_id = contactDTO.sys_id || "";
+      contactDTO.acquisition_package = AcquisitionPackage.packageId;
       return sys_id.length > 0
         ? await api.contactsTable.update(sys_id, contactDTO)
         : await api.contactsTable.create(contactDTO);
