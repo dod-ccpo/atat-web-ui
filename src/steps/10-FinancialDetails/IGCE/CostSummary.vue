@@ -449,14 +449,15 @@ class CostSummary extends Vue {
     const ditcoFee = this.costData.payload.ditco_fee
     const contractingFee = this.costData.payload.other_contracting_office_fee
     const grandTotal = this.costData.payload.grand_total_with_fee
+    const allFees = this.costData.payload.surge_and_fees;
 
     if (surgeData) {
       this.createTableData(subTotalData, "false", "Subtotal")
     }
     if (surgeData) {
-      this.createTableData(subTotalData, "false", "Surge and Fees")
+      this.createTableData(allFees, "false", "Surge and Fees")
     } else {
-      this.createTableData(subTotalData, "false", "Fees")
+      this.createTableData(allFees, "false", "Fees")
     }
     if (surgeData) {
       this.createTableData(surgeData, "false", this.surgePercentage, true)
