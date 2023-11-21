@@ -26,15 +26,16 @@
       class="text-primary _input-max-width d-flex align-center"
       :hide-details="true"
       variant="outlined"
-      @update:model-value="onInput"
-      v-model="dateFormatted"
+      :model-value="_value"
+      @update:model-value="_value = $event"
+      
       :style="'width: ' + width + 'px'"
       density="compact"
       :rules="rules"
       @blur="onBlur"
       validate-on="blur"
       autocomplete="off"
-    ></v-text-field>  
+    />
        
      
     <ATATErrorValidation v-if="showErrors" :errorMessages="errorMessages" />
@@ -51,6 +52,7 @@ import ATATTooltip from "@/components/ATATTooltip.vue";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import {ValidationRule} from "../../types/Global";
+import { PropSync } from "@/decorators/custom";
 
 @Component({
   emits:[
@@ -82,11 +84,11 @@ class ATATDatePicker extends Vue {
 
   @Prop({ default: "" }) private label!: string;
   @Prop({ default: "" }) private id!: string;
-  @Prop({ default: "" }) private value!: string;
+  @PropSync("value", { default: "" }) private _value!: string;
   @Prop({ default: false }) private optional!: boolean;
   @Prop({ default: "" }) private placeHolder!: string;
-  @Prop({ default: "220" }) private width!: string;
-  @Prop({ default: "mm/dd/yyyy" }) private helpText!: string;
+  @Prop({ default: "140" }) private width!: string;
+  @Prop({ default: "MM/DD/YYYY" }) private helpText!: string;
   @Prop({ default: true }) private showHelpText!: boolean;
   @Prop({ default: "" }) private tooltipTitle!: string;
   @Prop({ default: "" }) private tooltipText!: string;
@@ -99,7 +101,7 @@ class ATATDatePicker extends Vue {
    */
   @Watch("date")
   protected formatDateWatcher(): void {
-    this.dateFormatted = this.reformatDate(this.date[0]);
+    this.dateFormatted = this.reformatDate(this._value);
   }
 
   @Watch("value")
@@ -125,54 +127,14 @@ class ATATDatePicker extends Vue {
   /**
    * onBlur event of the textbox.
    *
-   * if textbox value is a valid date
-   * [x] reformat textbox value date for datepicker
-   * [x] update date value property
-   * [x] remove any errors
+   * validates and set error msgs if necessary
    */
 
   private onBlur(): void {
-    if (isValid(new Date(this.dateFormatted))) {
-      this.date = [this.reformatDate(this.dateFormatted)];
-      this.updateDateValueProperty();
-      this.removeErrors();
-    }
-    this.$nextTick(() => {
-      this.$refs.atatDatePickerTextField.validate()
-      this.setErrorMessage();
-    });
+    this.setErrorMessage();
   }
-  /**
-   *
-   * if textbox is cleared manually, resets necessary
-   * date attribs
-   */
-  private onInput(date: string): void {
-    if (date === "") {
-      this.dateFormatted = "";
-      this.date = [""];
-    }
-  }
+  
 
-
-  /**
-   * emits 'update:date' value when dp is clicked or
-   * textbox value is changed
-   */
-  private updateDateValueProperty(): void {
-    if (isValid(new Date(this.dateFormatted))) {
-      this.$emit("update:value", this.dateFormatted);
-    } 
-  }
-
-
-  /**
-   * utility function that removes errors from
-   * Vuetify's errorBucket & this.errorMessages
-   */
-  private removeErrors(): void {
-    this.errorMessages = [];
-  }
 
   /**
    * FUNCTIONS
@@ -246,10 +208,10 @@ class ATATDatePicker extends Vue {
   }
 
   public async setDateFromValue(): Promise<void> {
-    if (this.value && this.value.indexOf("-") > -1) {
-      this.date[0] = this.value;
-    } else if (this.value && this.value.indexOf("/") > -1) {
-      this.date[0] = this.reformatDate(this.value);
+    if (this._value && this._value.indexOf("-") > -1) {
+      this.date[0] = this._value;
+    } else if (this._value && this._value.indexOf("/") > -1) {
+      this.date[0] = this.reformatDate(this._value);
     }
   }
 
@@ -260,7 +222,6 @@ class ATATDatePicker extends Vue {
     await this.setDateFromValue();
     this.formatDateWatcher();
     this.dateInputMask();
-    this.removeErrors();
   }
 
 }

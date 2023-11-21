@@ -140,10 +140,10 @@ import {ClassificationLevelDTO} from "@/api/models";
 import classificationRequirements from "@/store/classificationRequirements";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
-import { DOWCardData } from "types/Global";
+import { DOWCardData, SaveOnLeaveRefs } from "types/Global";
 import DescriptionOfWork from "@/store/descriptionOfWork";
 import Steps from "@/store/steps";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import {buildClassificationLabel} from "@/helpers";
  
 
@@ -156,14 +156,14 @@ import {buildClassificationLabel} from "@/helpers";
   }
 })
 class DOWLandingPage extends Vue {
-
-  $refs!: SaveOnLeaveRefs
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   displayWarning = false;

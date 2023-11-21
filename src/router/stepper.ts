@@ -232,6 +232,8 @@ import {
   SeverabilityAndIncrementalFundingResolver,
   CreatePriceEstimateResolver,
   ProjectOverviewResolver,
+  CurrentEnvironmentLocationResolver,
+  InstanceDetailsResolver,
   OrganizationResolver,
   ContactInformationResolver,
   CorInformationResolver,
@@ -761,7 +763,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "03",
     completePercentageWeight: 7,
     menuText: "Contract Details",
-    path: "/period-of-performance",
+    path: "/",
     component: ContractDetails,
     children: [
       {
@@ -841,7 +843,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
   {
     stepNumber: "04",
     menuText: "Background",
-    path: "/current-contract",
+    path: "/",
     completePercentageWeight: 10,
     component: Background,
     stepCompleteOnEnter: routeNames.ClassificationRequirements,
@@ -923,6 +925,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: CurrentEnvironmentLocation,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: CurrentEnvironmentLocationResolver,
       },
       {
         menuText: "Classification Levels",
@@ -941,6 +944,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
         component: InstanceDetails,
         completePercentageWeight: 5,
         completed: false,
+        routeResolver: InstanceDetailsResolver,
       },
       {
         menuText: "Environment Summary",
@@ -1033,7 +1037,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Service Offerings",
-        path: "/service-offerings/:groupName",
+        path: "/service-offerings",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferings,
         completePercentageWeight: 1,
@@ -1052,6 +1056,15 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       {
         menuText: "Service Offering Details",
         path: "/service-offering-details/:groupName/:serviceOffering",
+        excludeFromMenu: true,
+        name: routeNames.ServiceOfferingDetails,
+        completePercentageWeight: 1,
+        component: ServiceOfferingDetails,
+        routeResolver: OfferingDetailsPathResolver,
+      },
+      {
+        menuText: "Service Offering Details",
+        path: "/service-offering-details/:groupName",
         excludeFromMenu: true,
         name: routeNames.ServiceOfferingDetails,
         completePercentageWeight: 1,
@@ -1097,7 +1110,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
       },
       {
         menuText: "Landing Page",
-        path: "/",
+        path: "/dow-landing-page",
         excludeFromMenu: true,
         name: routeNames.DOWLandingPage,
         completePercentageWeight: 1,
@@ -1111,7 +1124,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "06",
     completePercentageWeight: 7,
     menuText: "Other Contract Considerations",
-    path: "/conflict-of-interest",
+    path: "/",
     component: OtherContractConsiderations,
     children: [
       {
@@ -1167,7 +1180,7 @@ export const stepperRoutes: Array<StepperRouteConfig> = [
     stepNumber: "07",
     completePercentageWeight: 7,
     menuText: "Standards and Compliance",
-    path: "/personally-identifiable-information",
+    path: "/",
     component: OtherContractConsiderations,
     children: [
       {

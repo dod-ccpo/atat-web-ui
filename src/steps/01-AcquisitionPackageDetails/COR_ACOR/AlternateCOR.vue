@@ -9,6 +9,7 @@
           </h1>
 
           <ATATRadioGroup
+            ref="HasAlternateCORRef"
             id="HasAlternateCOR"
             legend="Indicate if you have an ACOR"
             :legend-sr-only="true"
@@ -45,9 +46,9 @@
  
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { RadioButton } from "types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import ATATAlert from "@/components/ATATAlert.vue";
 
 @Component({
@@ -58,13 +59,13 @@ import ATATAlert from "@/components/ATATAlert.vue";
 })
 class AlternateCOR extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private alternateCoreOptions: RadioButton[] = [

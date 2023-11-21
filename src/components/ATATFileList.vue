@@ -1,6 +1,10 @@
 <template>
   <div v-if="uploadingFiles.length > 0">
-    <v-card flat class="file-loading-div pa-6">
+    <v-card 
+      flat 
+      class="file-loading-div pa-6"
+      :style="'width:' + width + 'px !important'"
+      >
       <v-card-title
         v-if="multiplesAllowed === true"
         :class="[{ 'pb-6': multiplesAllowed }, 'h2 pa-0']"
@@ -15,7 +19,7 @@
           :class="[{ 'mb-5': multiplesAllowed }]"
         />
       </div>
-    </v-card>
+    </v-card> 
     <ATATDialog
       id="DeleteFilesConfirmation"
       :showDialog="showDialog"
@@ -55,6 +59,7 @@ import { uploadingFile } from "types/Global";
 })
 class ATATFileList extends Vue {
   @Prop({ default: "61686c" }) private color!: string;
+  @Prop({ default: "740" }) private width!: string;
   @Prop() private validFiles!: uploadingFile[];
   @PropSync("isFullSize", { default: true }) private _isFullSize!: boolean;
   @PropSync("removeAll", { default: false }) public _removeAll?: boolean;

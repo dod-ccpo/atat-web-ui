@@ -15,6 +15,7 @@
 
           <ATATCheckboxGroup
             id="UsedForEstimatingCheckboxes"
+            ref="UsedForEstimatingCheckboxesRef"
             groupLabel="What information and/or tools were used to generate your estimated prices?"
             class="copy-max-width mb-10"
             :value="selectedTools"
@@ -36,6 +37,7 @@
 
           <ATATTextArea
             id="HowEstimateMade"
+            ref="HowEstimateMadeRef"
             label="How was your cost estimated?"
             class="max-width-740 mb-7"
             rows="7"
@@ -55,6 +57,7 @@
 
           <ATATRadioGroup
             id="PriceComparison"
+            ref="PriceComparisonRef"
             class="mb-10"
             legend="Thinking of your previous contract for this requirement, how 
               does the cost estimate compare with the prices that you actually paid 
@@ -71,9 +74,9 @@
           
           <ATATTextField
             v-if="showPercentage"
-            ref="percentOverUnder"
             :label="percentageLabel"
             id="PricePercentage"
+            ref="PricePercentageRef"
             suffix="%"
             width="150"
             :value="percentOverUnder"
@@ -97,8 +100,8 @@ import ATATCheckboxGroup from "@/components/ATATCheckboxGroup.vue";
 import ATATTextArea from "@/components/ATATTextArea.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
 
-import {RadioButton, Checkbox} from "../../../../types/Global";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import {RadioButton, Checkbox, SaveOnLeaveRefs} from "../../../../types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import IGCEStore from "@/store/IGCE";
 import {RequirementsCostEstimateDTO} from "@/api/models";
 import {hasChanges} from "@/helpers";
@@ -120,14 +123,16 @@ class EstimatesDeveloped extends Vue {
       resetValidation(): void
     };
   }
-  
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
+  
   public selectedPriceComparison: "" | "MORE_THAN" | "LESS_THAN" | "SAME" = "";
   public howEstimateMade = "";
   public otherValueEntered = "";

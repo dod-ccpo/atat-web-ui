@@ -314,7 +314,8 @@ export class SummaryStore extends VuexModule {
     }
 
     const orgnameKey =
-        organization.disa_organization_reference ? "disa_organization_reference":"organization_name"
+        organization?.disa_organization_reference ? 
+          "disa_organization_reference" : "organization_name"
 
     const foreignKeys =
         // eslint-disable-next-line max-len
@@ -553,7 +554,7 @@ export class SummaryStore extends VuexModule {
       }): Promise<string>{
     let MRRText = "";
     const FARSelection =
-        resources.fairOpp.exception_to_fair_opportunity?.split("_").slice(-1).join()
+        resources?.fairOpp?.exception_to_fair_opportunity?.split("_").slice(-1).join()
     let FARText = "";
     switch(FARSelection){
     case "A":
@@ -586,26 +587,30 @@ export class SummaryStore extends VuexModule {
 
   @Action({rawError: true})
   public async isFairOpportunityComplete(fairOpp: FairOpportunityDTO): Promise<boolean>{
-    const hasNoFairOpp = fairOpp.exception_to_fair_opportunity === "NO_NONE"
+    if (!fairOpp) return false
+    
+    if (fairOpp.exception_to_fair_opportunity === "NO_NONE") return true
+
     const hasProposedCSP = fairOpp.proposed_csp !== "";
     const hasJustification = fairOpp.justification !== "";
     const hasMinGovtRequirements = fairOpp.min_govt_requirements !== ""
         && fairOpp.min_govt_requirements !== "The cloud service offerings must continue at their " +
         "current level in order to support...\n\nThese offerings include..."
-    return (hasNoFairOpp) ||
-        (hasProposedCSP
-            && hasJustification
-            && hasMinGovtRequirements
-            && await this.hasSoleSourceSituation(fairOpp)
-            && await this.hasProcurement(fairOpp)
-            && fairOpp.requirement_impact !== ""
-            && fairOpp.contract_action !== ""
-            && await this.hasMarketResearchEfforts(fairOpp)
-            && await this.hasMarketResearchConductors(fairOpp)
-            && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
-            && await this.hasActionsToRemoveBarriers(fairOpp)
-            && await this.hasCertificationPOCS(fairOpp)
-        );
+
+    return (
+      hasProposedCSP
+      && hasJustification
+      && hasMinGovtRequirements
+      && await this.hasSoleSourceSituation(fairOpp)
+      && await this.hasProcurement(fairOpp)
+      && fairOpp.requirement_impact !== ""
+      && fairOpp.contract_action !== ""
+      && await this.hasMarketResearchEfforts(fairOpp)
+      && await this.hasMarketResearchConductors(fairOpp)
+      && await this.hasOtherFactsToSupportLogicalFollowOn(fairOpp)
+      && await this.hasActionsToRemoveBarriers(fairOpp)
+      && await this.hasCertificationPOCS(fairOpp)
+    )
   }
 
   @Action({rawError: true})

@@ -35,7 +35,7 @@
         offset="0"
         anchor="bottom end"
         :disabled="menuDisabled"
-        :eager="true"
+        
         menu-icon="mdi-chevron-down"
       >
         <template v-if="showSelectedValue" v-slot:selection="{ item }">
@@ -106,14 +106,11 @@ import { getIdText } from "@/helpers";
 class ATATSelect extends Vue {
   // refs
   $refs!: {
-    atatSelect: ComponentPublicInstance & {
-      errorBucket: string[]; 
-      errorCount: number;
-      blur: ()=> void;
-      focus: ()=> void;
-      validate: () => Promise<string[]>;
-    };
-  }; 
+    atatSelect: (ComponentPublicInstance)& {
+      validate: () => Promise<string[]>
+    }
+  };
+
 
   @PropSync("selectedValue") private _selectedValue!: string | SelectData;
   @Prop({ default: "" }) private placeholder!: string;
@@ -163,58 +160,16 @@ class ATATSelect extends Vue {
       this.selectedBeforeChange = val;
     }
   }
-  // @Emit("onChange")
-  // private onChange(val: string | SelectData): void {
-  //   const isString = typeof val === "string";
-  //   const isObject = typeof val === "object"
-  //   let isSelectable = true;
-  //   if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
-  //     && val.isSelectable !== undefined) {
-  //     isSelectable = val.isSelectable;
-  //   }
-  //   if (isString || isSelectable) {
-  //     this.selected = val;
-  //     this.setErrorMessage();
-  //     this.$emit("selectValueChange", { 
-  //       "newSelectedValue": val, 
-  //       "selectedBeforeChange": this.selectedBeforeChange 
-  //     });
-  //     this.selectedBeforeChange = val;
-  //   }
-  // }
-
-  public get validateFormNow(): boolean {
-    return AcquisitionPackage.getValidateNow;
-  }
-
-  @Watch('validateFormNow')
-  public validateNowChange(): void {
-    // this.addRequiredRule();
-    // if(!this.$refs.atatSelect.validate()){
-    //   this.setErrorMessage();
-    //   this.$emit('errorMessage', this.errorMessages);
-    // }
-  }
-
-  public addRequiredRule(): void {
-    // accommodates for dropdowns that are loaded
-    // with no preselected value but required validation saveOnLeave
-    this.$nextTick(()=>{
-      this._rules.push((v:string)=>v !== "" || "")
-    })
-  }
-
+ 
   private onInput(v: string) {
     this._selectedValue = v;
   }
 
   private setErrorMessage(): void {
     this.$refs.atatSelect.validate().then(
-      async (response: string[]) => {
-        if (response.length>0){
-          this.errorMessages = response;
-          this.$emit('errorMessage', this.errorMessages);
-        }
+      async (response:string[])=> {
+        this.errorMessages = response;
+        this.$emit('errorMessage', this.errorMessages);
       }
     );
   }

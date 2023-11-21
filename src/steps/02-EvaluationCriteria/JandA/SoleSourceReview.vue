@@ -58,20 +58,27 @@
 
             <ATATTextArea 
               id="SoleSourceSituation"
+              ref="SoleSourceSituationRef"
               class="mt-6 textarea-max-width"
               label="Cause of your sole source situation"
               :labelSrOnly="true"
-              :value.sync="soleSourceCause"
+              :value="soleSourceCause"
+              @update:value="soleSourceCause = $event"
               :autoGrow="true"
               :rows="10"
               minHeight="200"
               :maxChars="2500"
               :validateItOnBlur="true"
               :noResize="false"
-              :rules="soleSourceRules"
+              :rules="[
+                $validators.required(
+                  `Enter an explanation for the cause of your sole source situation.`
+                ),
+                $validators.maxLength(2500)]"
             />
 
             <ExplanationButtons 
+              ref="ExplanationButtonsRef"
               :showChangeToCustomButton="showChangeToCustomButton"
               :showChangeToDAPPSButton="showChangeToDAPPSButton"
               :showRestoreSuggestionButton="showRestoreSuggestionButton"
@@ -103,7 +110,8 @@
 </template>
 
 <script lang="ts">
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
@@ -137,13 +145,13 @@ import {routeNames} from "@/router/stepper";
 
 class SoleSourceReview extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   public projectTitle = AcquisitionPackage.projectTitle;
@@ -163,13 +171,7 @@ class SoleSourceReview extends Vue {
   public showAlert = false;
   public hasFormBeenEdited = false;
   public hasSuggestedTextBeenEdited = false;
-  public explanation = AcquisitionPackage.fairOppExplanations.soleSource;
-  public soleSourceRules: Array<unknown> = [
-    this.$validators.required(`Enter an explanation for the cause of 
-                  your sole source situation.`),
-    this.$validators.maxLength(2500)
-  ];
-    
+  public explanation = AcquisitionPackage.fairOppExplanations.soleSource;    
 
   public get pageHeaderIntro(): string {
     return this.useCustomTextOnLoad ? "Tell us about" : "Let’s review";

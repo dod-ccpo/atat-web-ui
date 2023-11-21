@@ -2,7 +2,7 @@
 <template>
   <div>
     <section v-if="isForm" :class="{'mt-10' : isWizard}">
-      <hr v-if="isWizard" />
+      <hr v-if="isWizard && !isPrimaryContact" />
       <h2 v-if="isWizard" :id="corOrAcor +'_ContactInfoHeader'" class="form-section-heading">
         {{ sectionHeader }}
       </h2>
@@ -16,19 +16,15 @@
       </h3>
 
       <ATATRadioGroup
-        v-show="isWizard"
+        v-if="isWizard"
         id="ContactAffiliation"
         ref="ContactAffiliationRef"
-        :legend="
-          'What role best describes your ' +
-          corOrAcor +
-          '’s affiliation with the DoD?'
-        "
+        :legend="contactAffliliationRef"
         :items="contactRoles"
         :value="_selectedRole"
         @update:value="_selectedRole = $event"
         :rules="[
-          $validators.required('Please enter your ' + corOrAcor + '’s role.'),
+          $validators.required('Please enter ' + contactString + ' role.'),
         ]"
         class="mb-10"
         @radioButtonSelected="contactTypeChange"
@@ -38,7 +34,7 @@
         <ATATSelect
           :id="corOrAcor + '_Branch'"
           :ref="corOrAcor + '_BranchRef'"
-          v-show="_selectedRole === 'MILITARY'"
+          v-if="_selectedRole === 'MILITARY'"
           v-model="_selectedBranch"
           class="_input-max-width mb-10"
           label="Service Branch"
@@ -47,47 +43,43 @@
           :selectedValue="_selectedBranch"
           @update:selectedValue="_selectedBranch = $event"
           :returnObject="true"
-          :rules="[
-            $validators.required(
-              'Please select your ' + corOrAcor + '’s service branch.'
-            ),
-          ]"
+          :rules="[$validators.required(
+              'Please select ' + contactString + ' service branch.'
+            )]"
         />
 
-        <div v-if="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
-          <!-- <ATATAutoComplete
-            :id="corOrAcor + '_Rank'"
-            :ref="corOrAcor + '_RankRef'"
-            v-if="_selectedRole === 'MILITARY'"
-            label="Rank"
-            titleKey="name"
-            valueKey="sysId"
-            :items="selectedBranchRanksData"
-            :searchFields="['name', 'grade']"
-            :selectedItem="_selectedRank"
-            @update:selectedItem="_selectedRank = $event"
-            :rules="[
-              $validators.required(
-                'Please select your ' + corOrAcor + '’s rank.'
-              ),
-            ]"
-            class="_input-max-width mb-7"
-            icon="arrow_drop_down"
-          /> -->
+       
+        <ATATAutoComplete
+          :id="corOrAcor + '_Rank'"
+          ref="RankRef"
+          v-if="_selectedRole === 'MILITARY'"
+          label="Rank"
+          titleKey="name"
+          valueKey="sysId"
+          :items="selectedBranchRanksData"
+          :searchFields="['name', 'grade']"
+          :selectedItem="_selectedRank"
+          @update:selectedItem="_selectedRank = $event"
+          :rules = "[$validators.required(
+            'Please select ' + contactString + ' rank.', undefined, true
+          )]"
+          class="_input-max-width mb-7"
+          icon="arrow_drop_down"
+        />
 
-          <ATATSelect
-            :id="corOrAcor + '_Salutation'"
-            :ref="corOrAcor + '_SalutationRef'"
-            v-show="_selectedRole === 'CIVILIAN'"
-            class="_input-max-width mb-7"
-            label="Salutation"
-            :optional="true"
-            placeholder=""
-            :items="salutationData"
-            :selectedValue="_selectedSalutation"
-            @update:selectedValue="_selectedSalutation = $event"
-          />
-
+        <ATATSelect
+          :id="corOrAcor + '_Salutation'"
+          :ref="corOrAcor + '_SalutationRef'"
+          v-if="_selectedRole === 'CIVILIAN'"
+          class="_input-max-width mb-7"
+          label="Salutation"
+          :optional="true"
+          placeholder=""
+          :items="salutationData"
+          :selectedValue="_selectedSalutation"
+          @update:selectedValue="_selectedSalutation = $event"
+        />
+        <div v-if="_selectedRole">
           <v-row class="form-section mb-7">
             <v-col class="col-12 col-lg-3">
               <ATATTextField
@@ -99,7 +91,7 @@
                 @update:value="_firstName = $event"
                 :rules="[
                   $validators.required(
-                    'Please enter your ' + corOrAcor + '’s first name.'
+                    'Please enter ' + contactString + ' first name.'
                   ),
                 ]"
               />
@@ -125,7 +117,7 @@
                 @update:value="_lastName = $event"
                 :rules="[
                   $validators.required(
-                    'Please enter your ' + corOrAcor + '’s last name.'
+                    'Please enter ' + contactString + ' last name.'
                   ),
                 ]"
               />
@@ -143,6 +135,19 @@
             </v-col>
           </v-row>
 
+          <ATATTextField
+            v-if="showTitle"
+            ref="TitleRef"
+            label="Your title"
+            id="ContactTitle"
+            class="_input-max-width mb-10"
+            :value="_title"
+            @update:value="_title = $event"
+            :rules="[
+              $validators.required('Please enter ' + contactString + ' title.')
+            ]"
+          />
+
           <ATATPhoneInput
             :id="corOrAcor + '_PhoneNumber'"
             :ref="corOrAcor + '_PhoneNumberRef'"
@@ -156,7 +161,7 @@
             @update:extensionValue="_phoneExt = $event"
             :rules="[
               $validators.required(
-                'Please enter your ' + corOrAcor + '’s phone number'
+                'Please enter ' + contactString + ' phone number'
               ),
               $validators.isPhoneNumberValid(_selectedPhoneCountry),
             ]"
@@ -173,7 +178,7 @@
             @update:value="_email = $event"
             :rules="[
               $validators.required(
-                'Please enter your ' + corOrAcor + '’s email address.'
+                'Please enter ' + contactString + ' email address.'
               ),
               $validators.isEmail(),
             ]"
@@ -188,7 +193,7 @@
             @update:dodaac="_dodaac = $event"
             :corOrAcor="corOrAcor"
             :rules="[ 
-              $validators.required('Please enter your ' + corOrAcor + '’s 6-character DoDAAC.'),
+              $validators.required('Please enter ' + contactString + ' 6-character DoDAAC.'),
             ]"
           />
         </div>
@@ -217,8 +222,7 @@
 </template>
 
 <script lang="ts">
-import { ComponentPublicInstance } from "vue";
-import { Component, Prop , Vue, toNative } from "vue-facing-decorator";
+import { Component, Prop , Vue, Watch, toNative } from "vue-facing-decorator";
 import { PropSync } from "@/decorators/custom"
 import ATATAutoComplete from "@/components/ATATAutoComplete.vue";
 import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
@@ -228,7 +232,13 @@ import ATATTextField from "@/components/ATATTextField.vue";
 
 import DoDAAC from "../components/DoDAAC.vue";
 
-import { RadioButton, SelectData, RankData, CountryObj } from "../../../../types/Global";
+import { 
+  RadioButton, 
+  SelectData, 
+  RankData, 
+  CountryObj, 
+} from "../../../../types/Global";
+
 
 @Component({
   components: {
@@ -244,6 +254,7 @@ class CorAcorContactInfoForm extends Vue {
 
   //props
   @Prop() private corOrAcor!: string;
+  @Prop({default: false}) private isPrimaryContact!: boolean;
   @Prop() private branchData!: SelectData[];
   @Prop() private selectedBranchRanksData!: SelectData[];
   @Prop() private contactRoles!: RadioButton[];
@@ -263,6 +274,8 @@ class CorAcorContactInfoForm extends Vue {
   @PropSync("suffix") private _suffix?: string;
   @Prop() private formalName?: string;
   @PropSync("email") private _email?: string;
+  @Prop({default: false}) private showTitle?: boolean;
+  @PropSync("title") private _title?: string;
   @PropSync("phone") private _phone?: string;
   @PropSync("phoneExt") private _phoneExt?: string;
   @PropSync("dodaac") private _dodaac?: string;
@@ -280,6 +293,24 @@ class CorAcorContactInfoForm extends Vue {
   private loaded = false;
   private contactTypeChange(): void {
     this.loaded = true;
+  }
+
+  get contactAffliliationRef(): string{
+    return this.isPrimaryContact
+      ? 'What role best describes your affiliation with the DoD?'
+      : 'What role best describes your ' + this.corOrAcor + '’s affiliation with the DoD?'
+  }
+
+  get contactString(): string{
+    return (this.isPrimaryContact ? "the primary POC" : "your " + this.corOrAcor) + "’s"
+  }
+
+  @Watch("_selectedBranch")
+  public clearRank(newVal: SelectData, oldVal: SelectData): void{
+    const isOldValValid = Object.values(oldVal).every(v=>v!=="")
+    if (isOldValValid){
+      this._selectedRank =  { grade: "", name: "", sysId: ""}
+    }
   }
 
 }

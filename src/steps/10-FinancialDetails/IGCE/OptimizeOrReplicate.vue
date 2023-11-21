@@ -17,6 +17,7 @@
             <ATATRadioGroup
               class="copy-max-width max-width-740"
               id="OptimizeOrReplicateEstimates"
+              ref="OptimizeOrReplicateEstimatesRef"
               :card="false"
               legend="How do you want to estimate a price for this requirement?"
               :items="optimizeOrReplicateEstimateOptions"
@@ -29,6 +30,7 @@
 
           <div v-if="opRepOption !== ''">
             <ATATSingleAndMultiplePeriods
+              ref="ATATSingleAndMultiplePeriodsRef"
               :periods="periods"
               @update:periods="periods = $event"
               :isMultiple="opRepOption === 'MULTIPLE'"
@@ -47,8 +49,8 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import {RadioButton, SingleMultiple} from "types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import {RadioButton, SaveOnLeaveRefs, SingleMultiple} from "types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSingleAndMultiplePeriods from "@/components/ATATSingleAndMultiplePeriods.vue";
 import { hasChanges } from "@/helpers";
@@ -66,15 +68,15 @@ import _ from "lodash";
 })
 class OptimizeOrReplicate extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
   private opRepOption: SingleMultiple = "";
   private opRepEstValues: string[] = [""];
   private periods: PeriodDTO[] | null = [];

@@ -16,7 +16,7 @@
             </h2>
             <br/>
             <span class="mt-2 mb-0">
-              <ul>
+              <ul class="_atat-ul">
                 <li class="mb-5">
                   We’ll use the information that you provided to generate your required 
                   documents for this acquisition package. This process will take a few minutes.
@@ -48,9 +48,10 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
+import { SaveOnLeaveRefs } from "types/Global";
 
 @Component({
   components: {
@@ -59,15 +60,16 @@ import ATATSVGIcon from "@/components/icons/ATATSVGIcon.vue";
 })
 class ReadyToGeneratePackage extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
-
+  
   get contractingShop():string {
     return AcquisitionPackage.contractingShop
   }

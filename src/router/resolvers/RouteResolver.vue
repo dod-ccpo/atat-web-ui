@@ -3,26 +3,31 @@
 </template>
 
 <script lang="ts">
+import AppSections from "@/store/appSections";
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import { RouteLocationNormalized } from "vue-router";
 
 // route resolver invoker
 import { InvokeRouteResolver } from "./index";
+import { InvokeATATRouteResolver } from "../provisionWorkflow";
 
-// Component.registerHooks(["beforeRouteEnter"]);
 @Component({})
 class RouteResolver extends Vue {
-  private resolveRoute(current: string): void {
+  private async resolveRoute(current: string): Promise<void> {
     const routeResolver = this.$route.query.resolver as string;
 
     if (!routeResolver) {
       throw new Error("could not obtain step resolver");
     }
 
-    console.log('route resolver: ', routeResolver)
-    console.log('current: ', current)
-
-    const routeName = InvokeRouteResolver(routeResolver, current);
+    const appSectionData = await AppSections.getSectionData();
+    let routeName = "";
+    if (appSectionData.activeSection === appSectionData.sectionTitles.AcquisitionPackage) {
+      routeName = InvokeRouteResolver(routeResolver, current);
+    } else if (appSectionData.activeSection === appSectionData.sectionTitles.ProvisionWorkflow) {
+      routeName = InvokeATATRouteResolver(routeResolver, current)
+    }
+    
     this.$router.push({ name: routeName });
   }
 
@@ -32,13 +37,13 @@ class RouteResolver extends Vue {
     from: RouteLocationNormalized,
     next: (n: unknown) => void
   ): Promise<void> {
-    next(async (vm: { resolveRoute: (current: string) => void }) => {
+    next(async (vm: { resolveRoute: (current: string) => Promise<void>}) => {
       const current = from.name;
       if (!current) {
         throw new Error("from route name undefined");
       }
 
-      vm.resolveRoute(current as string);
+      await vm.resolveRoute(current as string);
     });
   }
 }

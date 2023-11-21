@@ -38,7 +38,8 @@
                   <ATATTextField
                     :id="'Name' + index"
                     :ref="'Name' + index"
-                    :value.sync="researchers[index].name"
+                    :value="researchers[index].name"
+                    @update:value="researchers[index].name = $event"
                     :rules="index === 0?[$validators.required(nameErrorText)]:[]"
                   />
                 </div>
@@ -46,7 +47,8 @@
                   <ATATTextField
                     :id="'Title' + index"
                     :ref="'Title' + index"
-                    :value.sync="researchers[index].title"
+                    :value="researchers[index].title"
+                    @update:value="researchers[index].title = $event"
                     :rules="index === 0?[$validators.required(titleErrorText)]:[]"
                   />
                 </div>
@@ -54,7 +56,8 @@
                   <ATATTextField
                     :id="'Org' + index"
                     :ref="'Org' + index"
-                    :value.sync="researchers[index].org"
+                    :value="researchers[index].org"
+                    @update:value="researchers[index].org = $event"
                     :rules="index === 0?[$validators.required(orgErrorText)]:[]"
                   />
                 </div>
@@ -96,7 +99,8 @@ import { FairOpportunityDTO } from "@/api/models";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
 import _ from "lodash";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { SaveOnLeaveRefs } from 'types/Global'
 
 @Component({
   components: {
@@ -108,13 +112,13 @@ import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/sa
 
 class WhoConductedResearch extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   /* eslint-disable camelcase */
@@ -136,12 +140,7 @@ class WhoConductedResearch extends Vue {
     if(this.researchers[index]){
       this.researchers.splice(index,1)
       if(index === 0){
-        this.$refs.form.resetValidation?.();
-        // TODO children are no longer present on refs, need fix
-        // const formChildren = this.$refs.form.$children[0].$children;
-        // formChildren.forEach(ref => {
-        //   ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-        // })
+        (this.$refs.form as SaveOnLeaveRefs['form']).resetValidation?.();
       }
     }
   }

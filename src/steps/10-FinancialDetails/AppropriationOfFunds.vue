@@ -11,7 +11,9 @@
             generated, will be included in your Justification and Approval (J&A).
           </p>
           <div class="max-width-740">
-            <ATATRadioGroup id="fundTypes" 
+            <ATATRadioGroup 
+              id="fundTypes" 
+              ref="fundTypesRef"
               legend="What type of funds are planned for this acquisition?" 
               :items="fundTypes" 
               :value="selectedFundType"
@@ -22,7 +24,9 @@
               class="mb-10" 
               >
             </ATATRadioGroup>
-            <ATATRadioGroup id="ContactAffiliation" 
+            <ATATRadioGroup 
+              id="ContactAffiliation" 
+              ref="ContactAffiliationRef"
               legend="What fiscal year funds are planned for this acquisition?" 
               :items="fiscalYearFunds" 
               :value="selectedFiscalYear"
@@ -41,8 +45,8 @@
 
 import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import ATATRadioGroup from "../../components/ATATRadioGroup.vue";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
-import { RadioButton } from "types/Global";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { RadioButton, SaveOnLeaveRefs } from "types/Global";
 import { FundingRequestDTO } from "@/api/models";
 import FinancialDetails from "@/store/financialDetails";
 import { hasChanges } from "@/helpers";
@@ -55,13 +59,13 @@ import _ from "lodash";
 })
 class AppropriationOfFunds extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
   
   private fundingRequest: FundingRequestDTO ={};

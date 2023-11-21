@@ -20,15 +20,7 @@
       />
     </div>
     <div class="d-flex" :style="'width: ' + width">
-
-      <!-- 
-        :validate-on="validationString"
-        @update:error="setErrorMessage"
-        @update:model-value="onInput"
-        @update:modelValue="_value = $event"
-      -->
-
-      <v-text-field
+    <v-text-field
         :ref="isModal ? 'atatSearchInputModal' : 'atatSearchInput'"
         :id="id + '_SearchInput'"
         class="_search-input"
@@ -202,7 +194,6 @@ import { ValidationRule, mask } from "types/Global";
 import Inputmask from "inputmask/";
 import PortfolioStore from "@/store/portfolio";
 import AcquisitionPackage from "@/store/acquisitionPackage";
-import { provWorkflowRouteNames } from "@/router/provisionWorkflow";
 import AppSections from "@/store/appSections";
 
 @Component({
@@ -222,14 +213,12 @@ import AppSections from "@/store/appSections";
 class ATATSearch extends Vue {
   $refs!: {
     atatSearchInput: ComponentPublicInstance & {
-      errorBucket: string[];
-      errorCount: number;
+      validate: ()=> Promise<string>
       resetValidation(): void;
       value: string;
     };
     atatSearchInputModal: ComponentPublicInstance & {
-      errorBucket: string[];
-      errorCount: number;
+      validate: ()=> Promise<string>,
       resetValidation(): void;
       value: string;
     };
@@ -357,7 +346,7 @@ class ATATSearch extends Vue {
           if(response.provisioningIssue){
             PortfolioStore.setActiveTaskOrderNumber(this._value)
             await this.$router.push({
-              name: provWorkflowRouteNames.ProvisioningIssue
+              name: "Provisioning_Issue",
             })
             AppSections.changeActiveSection(AppSections.sectionTitles.ProvisionWorkflow);
             return;
@@ -433,11 +422,19 @@ class ATATSearch extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.$nextTick(() => {
-      this.errorMessages = !this.isModal
-        ? this.$refs.atatSearchInput.errorBucket
-        : this.$refs.atatSearchInputModal.errorBucket;
-    });
+    if (this.isModal){
+      this.$refs.atatSearchInputModal.validate().then(
+        async (response: string[]) => {
+          this.errorMessages = response;
+        }
+      );
+    } else {
+      this.$refs.atatSearchInput.validate().then(
+        async (response: string[]) => {
+          this.errorMessages = response;
+        }
+      );
+    }
   }
 
   private clearErrorMessages(): void {

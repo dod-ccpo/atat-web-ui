@@ -54,6 +54,7 @@
           </p>
           <ATATRadioGroup
             id="IncrementallyFundOptions"
+            ref="IncrementallyFundOptionsRef"
             :card="true"
             :items="incrementallyFundOptions"
             :rules="[$validators.required('Please select an option')]"
@@ -130,57 +131,6 @@
             </template>
           </ATATExpandableLink>
         </div>
-
-        <!-- TODO - ADD ALERT BACK IN WHEN IGCE IMPLEMENTED FULLY -->
-        
-        <!-- <div v-if="showAlert()">
-          <ATATAlert
-            id="IFPRequestPageAlert"
-            class="container-max-width my-10"
-            type="warning"
-          >
-            <template v-slot:content>
-              <div v-if="isPeriodsDataMissing || isCostEstimateMissing">
-                <h3 class="h3">Your
-                  <span v-if="isOnlyPoPyMissing">
-                    period of performance is
-                  </span>
-                  <span v-else-if="isOnlyCostEstimateMissing">
-                    requirements cost estimate is
-                  </span>
-                  <span v-else-if="isPoPAndCostEstimateMissing">
-                    period of performance and requirements cost estimate are
-                  </span>
-                  missing.
-                </h3>
-                <p id="AlertInfo" class="mt-2 mb-0">
-                  We will not be able to create your incremental funding plan until we have this
-                  missing info. We recommend
-                  <span v-if="isPeriodsDataMissing">updating your </span>
-                  <span v-else>completing the </span>
-                  <span v-if="isPoPAndCostEstimateMissing">
-                    <router-link
-                      id="PoPLink"
-                      :to="{name: routeNames.PeriodOfPerformance}"
-                    >Period of Performance section</router-link>
-                    and the
-                    <router-link
-                      id="CostEstimateLink"
-                      :to="{name: routeNames.RequirementsCostForm}"
-                    >Requirements Cost Estimate section</router-link>
-                  </span>
-                  <span v-else-if="isOnlyCostEstimateMissing || isOnlyPoPyMissing ">
-                    <router-link
-                      id="AlertLink"
-                      :to="{name: route}"
-                    >{{ linkText }}</router-link>
-                  </span>
-                  before proceeding.
-                </p>
-              </div>
-            </template>
-          </ATATAlert> 
-        </div>-->
       </v-col>
     </v-row>
   </v-container>
@@ -189,14 +139,14 @@
 <script lang="ts">
 
 import { Component, Watch, Vue, toNative, Hook } from "vue-facing-decorator";
-import { RadioButton } from "../../../types/Global";
+import { RadioButton, SaveOnLeaveRefs } from "../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
 import ATATAlert from "@/components/ATATAlert.vue";
 import Periods from "@/store/periods";
 import FinancialDetails from "@/store/financialDetails";
 import { routeNames } from "@/router/stepper";
-import { From, SaveOnLeaveRefs, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
+import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { PeriodDTO } from "@/api/models";
 import { hasChanges } from "@/helpers";
@@ -211,13 +161,14 @@ import { hasChanges } from "@/helpers";
 
 class SeverabilityAndIncrementalFunding extends Vue {
 
-  $refs!: SaveOnLeaveRefs
-  
+    
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
-      saveOnLeave: this.saveOnLeave, form: this.$refs.form, nextTick: this.$nextTick,
-    }).catch(() => false)
+      saveOnLeave: this.saveOnLeave, 
+      form: this.$refs as SaveOnLeaveRefs, 
+      nextTick: this.$nextTick,
+    }).catch()
   }
 
   private selectedFundOption = "";

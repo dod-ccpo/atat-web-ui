@@ -44,9 +44,9 @@ const router = createRouter({
   history: createWebHashHistory()
 });
 
-stepperRoutes.forEach((route) =>{
+stepperRoutes.map(mapStepperRouterToRaw).forEach((route) =>{
   route.children?.forEach((childRoute) =>{
-    router.addRoute(childRoute)
+    router.addRoute(route?.name || "", childRoute)
   })
 })
 

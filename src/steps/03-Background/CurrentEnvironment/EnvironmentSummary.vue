@@ -16,7 +16,7 @@
 
           <div 
             class="mt-4 _light-gray-card"
-            v-if="environmentTypeText && classificationsText"
+            v-if="environmentTypeText && classificationsText && tableData.length > 0"
           >
             <div class="d-flex" id="EnvironmentSummaryBox">
               <div>
@@ -90,7 +90,7 @@
                     <span class="font-size-12 text-error d-inline-block ml-1">Missing info</span>
                   </div>
                 </td>
-                <td v-if="envLocation !== 'CLOUD'">
+                <td v-if="hasMultipleClassifications">
                   <span class="nowrap">{{ item.classification }}</span>
                 </td>
                 <td>
@@ -212,6 +212,7 @@ class EnvironmentSummary extends Vue {
   public instanceNumberToDelete = 0;
   public classificationLevels: ClassificationLevelDTO[] = [];
   public locationNames: Record<string, string> ={}
+  public hasMultipleClassifications = false
 
   public get environmentTypeText(): string {
     switch (this.envLocation) {
@@ -390,23 +391,44 @@ class EnvironmentSummary extends Vue {
   public async buildTableData(): Promise<void> {
     setTimeout(async () => {
 
-      this.tableHeaders = [    
-        { title: "", value: "instanceNumber", width: "50" },
-        { title: "Location", value: "location" },
-        { title: "Classification", value: "classification" },
-        { title: "Quantity", value: "qty" },
-        { title: "vCPU", value: "vCPU" },
-        { title: "Memory", value: "memory" },
-        { title: "Storage", value: "storage" },
-        { title: "Performance", value: "performance" },
-        { title: "", value: "actions", width: "75" },
-      ];
+      this.hasMultipleClassifications = 
+        (this.classificationsCloud.length + this.classificationsOnPrem.length) > 1;
+
+      if (this.hasMultipleClassifications) {
+        this.tableHeaders = [    
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: "Location", value: "location" },
+          { title: "Classification", value: "classification" },
+          { title: "Quantity", value: "qty" },
+          { title: "vCPU", value: "vCPU" },
+          { title: "Memory", value: "memory" },
+          { title: "Storage", value: "storage" },
+          { title: "Performance", value: "performance" },
+          { title: "", value: "actions", width: "75" },
+        ]
+      } else {
+        this.tableHeaders = [    
+          { title: "", value: "instanceNumber", width: "50" },
+          { title: "Location", value: "location" },
+          { title: "Quantity", value: "qty" },
+          { title: "vCPU", value: "vCPU" },
+          { title: "Memory", value: "memory" },
+          { title: "Storage", value: "storage" },
+          { title: "Performance", value: "performance" },
+          { title: "", value: "actions", width: "75" },
+        ]
+      }
 
       this.tableData = [];
       this.envInstances = await CurrentEnvironment.getCurrentEnvironmentInstances();
       if (this.envInstances?.length){
+
+        if (this.envLocation === "ON_PREM") {
+          this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
+        }
+
+        let instanceIndex = 0;
         for (const instance of this.envInstances) {
-          const index = this.envInstances.indexOf(instance);
           const selectedInCloud = this.classificationsCloud.includes(instance.classification_level)
           const selectedOnPrem = this.classificationsOnPrem.includes(instance.classification_level)
           if(!selectedInCloud && !selectedOnPrem) {
@@ -445,7 +467,7 @@ class EnvironmentSummary extends Vue {
             }
 
             let regions = instances?.length
-              ? instances.join(", ")
+              ? instances.filter((x) => Boolean(x)).join(", ")
               : "";
             regions = regions.replaceAll("CONUS", "CONUS ");
             location = this.envLocation === "HYBRID"
@@ -468,27 +490,24 @@ class EnvironmentSummary extends Vue {
 
           const instanceData: EnvInstanceSummaryTableData = {
             instanceSysId: instance.sys_id,
-            instanceNumber: index + 1,
-            location,
-            classification,
+            instanceNumber: instanceIndex + 1,
             qty: instance.number_of_instances ? String(instance.number_of_instances) : "",
             vCPU: instance.number_of_vcpus ? String(instance.number_of_vcpus) : "",
             memory: instance.memory_amount ? String(instance.memory_amount) + " GB"  : "",
             storage,
             performance,
             isValid,
-          };
+          }
+
+          if (this.envLocation !== "ON_PREM") {
+            instanceData['location'] = location
+          }
+          if (this.hasMultipleClassifications) {
+            instanceData['classification'] = classification
+          }
 
           this.tableData.push(instanceData);
-          if (this.envLocation === "ON_PREM") {
-            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "location");
-          }
-
-          const hasMultipleClassifications
-            = this.classificationsCloud.length + this.classificationsOnPrem.length > 1;
-          if (!hasMultipleClassifications) {
-            this.tableHeaders = this.tableHeaders.filter(obj => obj.value !== "classification");
-          }
+          instanceIndex++
         }
       }
     }, 0);
