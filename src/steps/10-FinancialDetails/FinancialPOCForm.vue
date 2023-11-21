@@ -225,7 +225,6 @@ class FinancialPOCForm extends Vue {
       if (this.hasChanged()) {
         this.currentData.type = "Financial POC"
         this.currentData.can_access_package = "true"
-        console.table(this.currentData)
         await AcquisitionPackage.saveContactInfo({
           data: this.currentData,
           type: "Financial POC",
