@@ -106,7 +106,7 @@
 <script lang="ts">
 import { Component, Watch,  Vue, toNative } from "vue-facing-decorator";
 import { AwardedTaskOrderDetails } from "types/Global";
-import { getCurrencyString } from "@/helpers";
+import { getCurrencyString, scrollToMainTop } from "@/helpers";
 
 import ATATAlert from "@/components/ATATAlert.vue";
 import ATATExpandableLink from "@/components/ATATExpandableLink.vue";
@@ -139,6 +139,11 @@ class AwardedTaskOrder extends Vue {
     this.resetValidationNow = true;
     this.showTOSearchModal = false;
     PortfolioStore.setOpenTOSearchModal(false)
+  }
+
+  @Watch("showTOSearchModal")
+  public showTOSearchModalChanged(newVal: boolean): void {
+    if (!newVal) scrollToMainTop();
   }
 
   public get openTOSearchPortfolio(): boolean {

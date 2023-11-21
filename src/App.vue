@@ -32,6 +32,7 @@ import ProvisionWorkflow from "@/portfolios/provisioning/ProvisionWorkflow.vue";
 import AcquisitionPackage from "./store/acquisitionPackage";
 
 import Steps from '@/store/steps';
+import { scrollToMainTop } from "./helpers";
 
 @Component({
   components: {
@@ -94,6 +95,7 @@ class App extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    scrollToMainTop();
     Steps.initialize();
 
     await AcquisitionPackage.setIsProdEnv();
