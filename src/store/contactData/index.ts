@@ -5,8 +5,9 @@ import {ContactDTO, CountryDTO, MilitaryRankDTO, StateDTO, SystemChoiceDTO} from
 import api from "@/api";
 import {TABLENAME as ContactsTable} from "@/api/contacts";
 import {TABLENAME as MilitaryRanksTable} from "@/api/militaryRanks";
-import {AutoCompleteItem, AutoCompleteItemGroups, SelectData,} from "types/Global";
+import {AutoCompleteItem, AutoCompleteItemGroups, RankData, SelectData,} from "types/Global";
 import {nameofProperty, retrieveSession, storeDataToSession} from "../helpers"
+import AcquisitionPackage from "../acquisitionPackage";
 const ATAT_CONTACT_DATA_KEY = 'ATAT_CONTACT_DATA_KEY';
 
 const sortRanks = (a:MilitaryRankDTO, b:MilitaryRankDTO) => {
@@ -34,7 +35,7 @@ export class ContactDataStore extends VuexModule {
   public civilianGradeChoices: SystemChoiceDTO[] = [];
   public countries:CountryDTO[] = [];
   public militaryRanks: MilitaryRankDTO[] = [];
-  public militaryAutoCompleteGroups: AutoCompleteItemGroups = {};
+  public militaryAutoCompleteGroups:  { [key: string]: RankData[] } = {};
   public roleChoices: SystemChoiceDTO[]= [];
   public salutationChoices: SystemChoiceDTO[] = [];
   public states:StateDTO[] = [];
@@ -107,7 +108,7 @@ export class ContactDataStore extends VuexModule {
 
   @Mutation
   public setMilitaryAutoCompleteGroups(): void {
-    const autoCompleteItemGroups: { [key: string]: AutoCompleteItem[] } = {};
+    const autoCompleteItemGroups: { [key: string]: RankData[] } = {};
     this.branchChoices.forEach((branch) => {
       const branchRanks = this.militaryRanks
         .filter((rank) => rank.branch == branch.value)
@@ -279,6 +280,7 @@ export class ContactDataStore extends VuexModule {
   public async saveContact(contactDTO: ContactDTO): Promise<ContactDTO> {
     try {
       const sys_id = contactDTO.sys_id || "";
+      contactDTO.acquisition_package = AcquisitionPackage.packageId;
       return sys_id.length > 0
         ? await api.contactsTable.update(sys_id, contactDTO)
         : await api.contactsTable.create(contactDTO);

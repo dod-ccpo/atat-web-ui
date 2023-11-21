@@ -15,6 +15,13 @@
           <ATATContactForm
             ref="ATATContactFormRef"
             role-legend="What role best describes your Financial POC's affiliation?"
+            :contactRoles="contactRoles"
+            :selectedBranchRanksData="selectedBranchRanksData"
+            :branchData="branchData"
+            :selectedBranch="selectedBranch"
+            @update:selectedBranch="selectedBranch = $event"
+            :selectedRank="selectedRank"
+            @update:selectedRank="selectedRank = $event"
             :email="email"
             @update:email="email = $event"
             :firstName="firstName"
@@ -27,12 +34,8 @@
             @update:phone="phone = $event"
             :phoneExt="phoneExt"
             @update:phoneExt="phoneExt = $event"
-            :selectedBranch="selectedBranch"
-            @update:selectedBranch="selectedBranch = $event"
             :selectedPhoneCountry="selectedPhoneCountry"
             @update:selectedPhoneCountry="selectedPhoneCountry = $event"
-            :selectedRank="selectedRank"
-            @update:selectedRank="selectedRank = $event"
             :selectedRole="selectedRole"
             @update:selectedRole="selectedRole = $event"
             :selectedSalutation="selectedSalutation"
@@ -51,7 +54,7 @@
 <script lang="ts">
 /* eslint-disable camelcase */
 
-import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, Watch, toNative } from "vue-facing-decorator";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { 
   CountryObj, 
@@ -62,7 +65,7 @@ import {
 } from "../../../types/Global";
 import AcquisitionPackage from "@/store/acquisitionPackage";
 import { hasChanges } from "@/helpers";
-import { ContactDTO } from "@/api/models";
+import { ContactDTO, ReferenceColumn } from "@/api/models";
 import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
 import ContactData from "@/store/contactData";
 import { Countries } from "@/components/ATATPhoneInput.vue";
@@ -108,6 +111,17 @@ class FinancialPOCForm extends Vue {
     CONTRACTOR: 3,
   };
 
+  private emptyBranch: SelectData = {
+    text: "",
+    value: ""
+  };
+
+  private emptyRank: RankData = {
+    grade: "",
+    name: "",
+    sysId: ""
+  }
+
   private selectedPhoneCountry: CountryObj = {
     "name": "United States",
     "countryCode": "+1",
@@ -117,6 +131,8 @@ class FinancialPOCForm extends Vue {
   };
   public savedData: ContactDTO = AcquisitionPackage.initContact;
   private branchData: SelectData[] = []
+  private selectedBranchRanksData: RankData[] = [];
+  private branchRanksData: {[key: string]: RankData[]} = {};
   private contactRoles: RadioButton[] = [
     {
       id: "Civilian",
@@ -130,14 +146,23 @@ class FinancialPOCForm extends Vue {
     }
   ];
 
+  
+  // watchers
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setRankData();
+  }
+
+  @Watch("selectedRole")
+  protected selectedRoleChange(newRole: string): void {
+    this.selectedBranch = newRole === "MILITARY" 
+      ? AcquisitionPackage.selectedContactBranch
+      : {text: "", value: ""};
+  }
+
+
   public get currentData(): ContactDTO {
-    const first_name = this.firstName;
-    const last_name = this.lastName;
-    const middle_name = this.middleName;
-    const role = this.selectedRole;
-    const rank_components = this?.selectedRank ? this.selectedRank?.sysId: "";
-    const suffix = this.suffix;
-    const salutation = this.selectedSalutation;
     const countryCode = this.selectedPhoneCountry
       ? (this.selectedPhoneCountry.abbreviation.toUpperCase() as CountryCode)
       : undefined;
@@ -154,44 +179,43 @@ class FinancialPOCForm extends Vue {
       )?.format("INTERNATIONAL")
       : "";
 
-    if(countryCode){
-
+    if (countryCode) {
       const asyoutype= new AsYouType(countryCode);
       const formatted = asyoutype.input(this.phone);
       phone = `+${parsedPhone?.countryCallingCode} ${formatted}`;
     }
-
-
-    const phoneExt = this.phoneExt;
-    const email = this.email;
-    const grade_civ ="";
-    const title = "";
 
     const acqPkgId = AcquisitionPackage.acquisitionPackage
       ? AcquisitionPackage.acquisitionPackage.sys_id as string
       : "";
 
     return {
-      first_name,
-      last_name,
-      middle_name,
-      role,
-      rank_components,
-      suffix,
-      salutation,
+      first_name: this.firstName,
+      last_name: this.lastName,
+      middle_name: this.middleName,
+      role: this.selectedRole,
+      rank_components: this.selectedRank && this.selectedRank.sysId,
+      suffix: this.suffix,
+      salutation: this.selectedSalutation,
       phone: phone || "",
-      phone_extension: phoneExt || "",
-      email,
+      phone_extension: this.phoneExt,
+      email: this.email,
       type: "Financial POC",
       dodaac: "",
       can_access_package: "true",
-      grade_civ,
-      title,
-      manually_entered: "", 
+      grade_civ: "",
+      title: "",
+      manually_entered: "true", 
       acquisition_package: acqPkgId,
     };
   }
 
+  private setRankData(): void {
+    if (Object.values(this.selectedBranch).every(v=>v!=="")) {
+      this.selectedBranchRanksData =
+        this.branchRanksData[this.selectedBranch.value as string];
+    }
+  }
   private hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
@@ -199,6 +223,8 @@ class FinancialPOCForm extends Vue {
   protected async saveOnLeave(): Promise<boolean> {
     try {
       if (this.hasChanged()) {
+        this.currentData.type = "Financial POC"
+        this.currentData.can_access_package = "true"
         await AcquisitionPackage.saveContactInfo({
           data: this.currentData,
           type: "Financial POC",
@@ -210,6 +236,7 @@ class FinancialPOCForm extends Vue {
 
     return true;
   }
+  
   public async loadOnEnter(): Promise<void> {
     this.savedData.can_access_package = "true";
     const branches = await ContactData.LoadMilitaryBranches();
@@ -222,43 +249,31 @@ class FinancialPOCForm extends Vue {
       };
     });
     const storeData = await AcquisitionPackage.loadContactInfo("Financial POC");
+    this.branchRanksData = ContactData.militaryAutoCompleteGroups;
     this.savedData = storeData;
     if (storeData) {
-
       this.selectedRole = storeData.role;
-
-      if (
-        this.selectedRole === this.contactRoles[this.roleIndices.MILITARY].value
-      ) {
-        const rankComp = storeData.rank_components as unknown as {
-          link: string;
-          value: string;
-        };
+      if ( this.selectedRole === "MILITARY") {
+        const rankComp = typeof storeData.rank_components === "object"
+          ? (storeData.rank_components as ReferenceColumn).value
+          : storeData.rank_components
         if (rankComp) {
-          this.savedData.rank_components = rankComp.value;
+          this.savedData.rank_components = rankComp;
         }
 
-        const emptyBranch: { text: ""; value: "" } = { text: "", value: "" };
-
         //retrieve selected Military Rank from rank component
-        const rank = await ContactData.GetMilitaryRank(rankComp.value || "");
+        const rank = await ContactData.GetMilitaryRank(rankComp || "");
 
-        this.selectedBranch =
-          rank !== undefined
-            ? this.branchData.find((branch) => branch.value === rank.branch) ||
-            emptyBranch
-            : emptyBranch;
+        this.selectedBranch = rank !== undefined
+          ? this.branchData.find((branch) => branch.value === rank.branch) || this.emptyBranch
+          : this.emptyBranch;
 
-        this.selectedRank =
-          rank !== undefined
-            ? {
-              name: rank.name || "",
-              grade: rank.grade || "",
-              sysId: rank.sys_id || "",
-            }
-            : { grade: "", name: "", sysId: "" };
+        this.selectedRank = rank !== undefined
+          ? {name: rank.name, grade: rank.grade, sysId: rank.sys_id as string}
+          : this.emptyRank
+      } else if (this.selectedRole === "CIVILIAN"){
+        this.selectedSalutation = storeData.salutation;
       }
-      this.selectedSalutation = storeData.salutation;
       this.firstName = storeData.first_name;
       this.middleName = storeData.middle_name;
       this.lastName = storeData.last_name;
@@ -284,7 +299,6 @@ class FinancialPOCForm extends Vue {
         this.savedData.phone = phoneNumber;
       }
     }
-    this.$nextTick(()=> this.loaded = true);
   }
 
   public async mounted(): Promise<void> {

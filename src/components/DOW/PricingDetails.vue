@@ -2,6 +2,7 @@
   <section id="PricingDetails">
     <ATATRadioGroup 
       id="CurrentPaymentArrangement"
+      ref="CurrentPaymentArrangement"
       legend="Current payment arrangement"
       tooltipText="<strong>Reserved/pre-paid/up-front instances</strong> allow you to save on 
       usage costs for a fixed term.  <br><br><strong>Pay-as-you-go instances</strong> let you pay 
@@ -16,6 +17,7 @@
 
     <ATATDatePicker
       id="ExpirationDate"
+      ref="ExpirationDate"
       v-if="_pricingDetails.currentPaymentArrangement === 'PREPAID'"
       class="mt-8"
       :rules="[

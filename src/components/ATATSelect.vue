@@ -104,13 +104,13 @@ import { getIdText } from "@/helpers";
   }
 })
 class ATATSelect extends Vue {
+  // refs
   $refs!: {
-    atatSelect: ComponentPublicInstance & {
-      blur: ()=> void;
-      focus: ()=> void;
-      validate: () => Promise<string[]>;
-    };
-  }; 
+    atatSelect: (ComponentPublicInstance)& {
+      validate: () => Promise<string[]>
+    }
+  };
+
 
   @PropSync("selectedValue") private _selectedValue!: string | SelectData;
   @Prop({ default: "" }) private placeholder!: string;
@@ -160,26 +160,6 @@ class ATATSelect extends Vue {
       this.selectedBeforeChange = val;
     }
   }
-  // @Emit("onChange")
-  // private onChange(val: string | SelectData): void {
-  //   const isString = typeof val === "string";
-  //   const isObject = typeof val === "object"
-  //   let isSelectable = true;
-  //   if (isObject && Object.prototype.hasOwnProperty.call(val, "isSelectable")
-  //     && val.isSelectable !== undefined) {
-  //     isSelectable = val.isSelectable;
-  //   }
-  //   if (isString || isSelectable) {
-  //     this.selected = val;
-  //     this.setErrorMessage();
-  //     this.$emit("selectValueChange", { 
-  //       "newSelectedValue": val, 
-  //       "selectedBeforeChange": this.selectedBeforeChange 
-  //     });
-  //     this.selectedBeforeChange = val;
-  //   }
-  // }
-
  
   private onInput(v: string) {
     this._selectedValue = v;
@@ -187,11 +167,9 @@ class ATATSelect extends Vue {
 
   private setErrorMessage(): void {
     this.$refs.atatSelect.validate().then(
-      async (response: string[]) => {
-        if (response.length>0){
-          this.errorMessages = response;
-          this.$emit('errorMessage', this.errorMessages);
-        }
+      async (response:string[])=> {
+        this.errorMessages = response;
+        this.$emit('errorMessage', this.errorMessages);
       }
     );
   }

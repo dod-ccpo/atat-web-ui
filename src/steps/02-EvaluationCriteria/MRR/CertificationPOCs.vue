@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Hook, Vue, Watch, toNative } from "vue-facing-decorator";
+import { Component, Hook, Vue, toNative } from "vue-facing-decorator";
 import CertificationPOCTypeForm
   from "@/steps/02-EvaluationCriteria/MRR/CertificationPOCTypeForm.vue";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
@@ -66,6 +66,8 @@ import { convertColumnReferencesToValues } from "@/api/helpers";
 import _ from "lodash";
 import ContactData from "@/store/contactData";
 import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
+import { ComponentPublicInstance } from "vue";
 
 @Component({
   components: {
@@ -74,12 +76,18 @@ import { getStringFromReferenceColumn, hasChanges } from "@/helpers";
 })
 
 class CertificationPOCs extends Vue {
-    
+  $refs!: {
+    [key: string]: ComponentPublicInstance & {
+      validateForm: ()=> Promise<void>,
+      validate: ()=> Promise<SubmitEventPromise>,
+    };
+  };  
+
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
-      form: this.$refs as SaveOnLeaveRefs, 
+      form: this.$refs as unknown as SaveOnLeaveRefs, 
       nextTick: this.$nextTick,
     }).catch()
   }
@@ -96,52 +104,52 @@ class CertificationPOCs extends Vue {
   private requirementsPOCType = ""
   private showChildren = false
 
-  @Watch('technicalContactData', { deep: true })
-  public thing1(newVal: any) {
-    console.log('tech', newVal)
-  }
-
-  @Watch('requirementContactData', { deep: true })
-  public thing2(newVal: any) {
-    console.log('reqs', newVal)
-  }
 
   private get currentData(): FairOpportunityDTO {
-    // const fairOppSaved: FairOpportunityDTO = _.cloneDeep(AcquisitionPackage.fairOpportunity)
-    //   || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
-    // const formData: FairOpportunityDTO = {
-    //   technical_poc: this.technicalPOCId,
-    //   technical_poc_type: this.technicalPOCType as FinancialPOCType,
-    //   requirements_poc: this.requirementsPOCId,
-    //   requirements_poc_type: this.requirementsPOCType as FinancialPOCType
-    // };
-    // return Object.assign(fairOppSaved,formData)
-    return {}
+    const fairOppSaved: FairOpportunityDTO = _.cloneDeep(AcquisitionPackage.fairOpportunity)
+      || _.cloneDeep(AcquisitionPackage.getInitialFairOpportunity());
+    const formData: FairOpportunityDTO = {
+      technical_poc: this.technicalPOCId,
+      technical_poc_type: this.technicalPOCType as FinancialPOCType,
+      requirements_poc: this.requirementsPOCId,
+      requirements_poc_type: this.requirementsPOCType as FinancialPOCType,
+    };
+    return Object.assign(fairOppSaved,formData)
   }
-
   private savedData: FairOpportunityDTO = {}
 
   public hasChanged(): boolean {
     return hasChanges(this.currentData, this.savedData);
   }
 
+  public async isFormsValid(): Promise<boolean>{
+    return [
+      await this.$refs.requirementsFormRef.validateForm(),
+      await this.$refs.technicalFormRef.validateForm()
+    ].every(v=>v)
+  }
+
   protected async saveOnLeave(): Promise<boolean> {
-    if(this.requirementsPOCType === "NEW"){
-      const savedContact = await ContactData.saveContact(this.requirementContactData)
-      const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
-      this.requirementsPOCId = newContactSysId
-    }
-    if(this.technicalPOCType === "NEW"){
-      const savedContact = await ContactData.saveContact(this.technicalContactData)
-      const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
-      this.technicalPOCId = newContactSysId
-    }
-    try {
-      if(this.hasChanged()){
-        await AcquisitionPackage.setFairOpportunity(this.currentData)
+    if (await this.isFormsValid()){
+      if(this.requirementsPOCType === "NEW"){
+        const savedContact = await ContactData.saveContact(this.requirementContactData)
+        const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
+        this.requirementsPOCId = newContactSysId
       }
-    } catch (error) {
-      console.log(error);
+      if(this.technicalPOCType === "NEW"){
+        const savedContact = await ContactData.saveContact(this.technicalContactData)
+        const newContactSysId = convertColumnReferencesToValues(savedContact).sys_id as string;
+        this.technicalPOCId = newContactSysId
+      }
+
+      try {
+        if(this.hasChanged()){
+          await AcquisitionPackage.setFairOpportunity(this.currentData)
+        }
+      } catch (error) {
+        console.log(error);
+      }
+
     }
     return true;
   }

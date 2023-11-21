@@ -1,14 +1,17 @@
 <template>
-  <div :id="id + '_AutoComplete_Wrapper'">
+  <v-form 
+    :id="id + '_AutoComplete_Wrapper'"
+    ref="atatAutoCompleteFormRef"
+    @onBlur = onBlur
+    :lazy-validation="false">
     <label :for="id" :class="{ 'd-sr-only': labelSrOnly }" class="mb-2 d-block">
       {{ label }}
       <span v-if="optional" class="optional"> Optional </span>
     </label>
     <v-autocomplete
-      ref="atatAutoComplete"
+      ref="atatAutoCompleteRef"
       :id="id"
       :class="inputClass"
-
       :items="items"
       :item-title="titleKey"
       :item-value="valueKey"
@@ -17,24 +20,16 @@
       return-object
       clearable
       clear-icon="mdi-close"
-
       :model-value="_selectedItem"
       @update:modelValue="valueUpdate"
-
       :hide-details="true"
       :rules="rules"
       variant="outlined"
-
       :search="searchText"
       @update:search="searchText = $event"
       @blur="onBlur"
-
     >
-    <!-- 
-      @click:clear="valueCleared"
-      :customFilter="customFilter" 
-      @update:search="updateSearchInput" 
-    -->
+
 
       <template v-slot:item="{ props, item }">
         <v-list-item 
@@ -65,7 +60,7 @@
     </v-autocomplete>
     <ATATErrorValidation :errorMessages="errorMessages" />
 
-  </div>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -73,9 +68,10 @@
 import { ComponentPublicInstance } from "vue";
 import { AutoCompleteItem, ValidationRule } from "types/Global";
 
-import { Component, Prop, Vue, Watch, toNative } from "vue-facing-decorator";
+import { Component, Prop, Vue, toNative } from "vue-facing-decorator";
 import ATATErrorValidation from "@/components/ATATErrorValidation.vue";
 import { PropSync } from "@/decorators/custom";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 @Component({
   components: {
@@ -86,7 +82,11 @@ import { PropSync } from "@/decorators/custom";
 class ATATAutoComplete extends Vue {
   // refs
   $refs!: {
-    atatAutoComplete: ComponentPublicInstance &
+    atatAutoCompleteFormRef: ComponentPublicInstance & {
+      validate: () => Promise<SubmitEventPromise>;
+      blur: ()=> void;
+    };
+    atatAutoCompleteRef: ComponentPublicInstance &
     {
       blur: ()=> void;
       focus: ()=> void;
@@ -98,8 +98,7 @@ class ATATAutoComplete extends Vue {
   private searchText = "";
   private isReset = false;
 
-  // props
-
+  // prop
   @Prop({ default: "", required: true }) private id!: string;
   @Prop({ default: "", required: true }) private label!: string;
   @Prop({ default: false }) private labelSrOnly!: string;
@@ -114,11 +113,6 @@ class ATATAutoComplete extends Vue {
   @Prop({ default: "" }) private optional!: boolean;
   @Prop({ default: "" }) private noResultsText!: string;
   @PropSync("selectedItem") private _selectedItem!: AutoCompleteItem;
-
-  @Watch('_selectedItem', { deep: true })
-  private thing(newVal: any) {
-    console.log('thing: ', newVal)
-  }
 
   public emptySelectedItem = { [this.titleKey]: "", [this.valueKey]: "" };
 
@@ -142,9 +136,12 @@ class ATATAutoComplete extends Vue {
   }
 
   private setErrorMessage(): void {
-    this.$refs.atatAutoComplete.validate().then(
-      async (response: string[]) => {
-        this.errorMessages = response;
+    this.$refs.atatAutoCompleteFormRef.validate().then(
+      async (response:SubmitEventPromise)=>{
+        this.$refs.atatAutoCompleteRef.validate().then(
+          async (response:string[])=>{
+            this.errorMessages = response;
+          })
       }
     );
   }

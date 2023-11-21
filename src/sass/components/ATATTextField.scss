@@ -1,6 +1,9 @@
 ._atat-textfield {
   .v-field__input {
     padding: 0 !important;
+    height:40px !important;
+    padding-bottom: 2px !important;
+    padding-right: 10px !important;
   }
   .v-text-field {
     .v-field__input {
@@ -18,6 +21,11 @@
 
     .v-input__prepend-inner, .v-input__append-inner {
       z-index: 1;
+    }
+
+    .v-field--prepended{
+      height: 40px !important;
+      padding-bottom: 2px !important;
     }
 
 

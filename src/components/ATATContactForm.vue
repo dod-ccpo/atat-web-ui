@@ -13,14 +13,13 @@
         $validators.required('Enter ' + validationMsgCustom + ' role.'),
       ]"
       class="mb-10"
-      @radioButtonSelected="contactTypeChange"
     />
 
-    <v-form :ref="idPrefix + 'atatGlobalContact'">
+   
       <ATATSelect
         :id="idPrefix + 'Branch'"
         :ref="idPrefix + 'BranchRef'"
-        v-show="_selectedRole === 'MILITARY'"
+        v-if="_selectedRole === 'MILITARY'"
         v-model="_selectedBranch"
         :selectedValue="_selectedBranch"
         @update:selectedValue="_selectedBranch = $event"
@@ -38,40 +37,39 @@
         ]"
       />
 
-      <div v-show="(_selectedBranch && _selectedBranch.value) || _selectedRole === 'CIVILIAN'">
-        <ATATAutoComplete
-          :id="idPrefix + 'Rank'"
-          :ref="idPrefix +  'RankRef'"
-          v-show="_selectedRole === 'MILITARY'"
-          label="Rank"
-          titleKey="name"
-          valueKey="value"
-          :items="selectedBranchRanksData"
-          :searchFields="['name', 'grade']"
-          :selectedItem="_selectedRank"
-          @update:selectedItem="_selectedRank = $event"
-          :rules="[
-            $validators.required(
-              'Select ' + validationMsgCustom + ' rank.'
-            ),
-          ]"
-          class="_input-max-width mb-7"
-          icon="arrow_drop_down"
-        />
+      <ATATAutoComplete
+        :id="idPrefix + 'Rank'"
+        :ref="idPrefix +  'RankRef'"
+        v-if="_selectedRole === 'MILITARY'"
+        label="Rank"
+        titleKey="name"
+        valueKey="sysId"
+        :items="selectedBranchRanksData"
+        :searchFields="['name', 'grade']"
+        :selectedItem="_selectedRank"
+        @update:selectedItem="_selectedRank = $event"
+        :rules="[
+          $validators.required(
+            'Select ' + validationMsgCustom + ' rank.', undefined, true
+          ),
+        ]"
+        class="_input-max-width mb-7"
+        icon="arrow_drop_down"
+      />
 
-        <ATATSelect
-          :id="idPrefix + 'Salutation'"
-          :ref="idPrefix + 'SalutationRef'"
-          v-show="_selectedRole === 'CIVILIAN'"
-          class="_input-max-width mb-7"
-          label="Salutation"
-          :optional="true"
-          placeholder=""
-          :items="salutationData"
-          :selectedValue="_selectedSalutation"
-          @update:selectedValue="_selectedSalutation = $event"
-        />
-
+      <ATATSelect
+        :id="idPrefix + 'Salutation'"
+        :ref="idPrefix + 'SalutationRef'"
+        v-if="_selectedRole === 'CIVILIAN'"
+        class="_input-max-width mb-7"
+        label="Salutation"
+        :optional="true"
+        placeholder=""
+        :items="salutationData"
+        :selectedValue="_selectedSalutation"
+        @update:selectedValue="_selectedSalutation = $event"
+      />
+      <div v-if="_selectedRole">
         <v-row class="form-section mb-7">
           <v-col class="col-12 col-lg-3">
             <ATATTextField
@@ -178,7 +176,6 @@
           ]"
         />
       </div>
-    </v-form>
   </section>
 </template>
 
@@ -191,19 +188,15 @@ import ATATPhoneInput from "@/components/ATATPhoneInput.vue";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
 import ATATSelect from "@/components/ATATSelect.vue";
 import ATATTextField from "@/components/ATATTextField.vue";
-import ContactData from "@/store/contactData";
 import {
-  AutoCompleteItem,
-  AutoCompleteItemGroups,
   CountryObj,
   RadioButton,
   RankData,
   SelectData
 } from "../../types/Global";
-import { convertSystemChoiceToSelect } from "@/helpers";
 
 @Component({
-  emits: ["resetContactForm"],
+  emits: ["rankComponent"],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,
@@ -224,6 +217,8 @@ class ATATContactForm extends Vue {
   @Prop() private loaded!: boolean
   @Prop({default: "What role best describes your affiliation with the DoD?"})
   private roleLegend?: string;
+  @Prop() private branchData!: SelectData[];
+  @Prop() private selectedBranchRanksData!: SelectData[];
   @Prop({default: false}) public roleLegendFontNormalWeight?: boolean;
   @PropSync("showAccessRadioButtons") private _showAccessRadioButtons!: boolean;
   @PropSync("selectedPhoneCountry") private _selectedPhoneCountry!: CountryObj;
@@ -247,17 +242,28 @@ class ATATContactForm extends Vue {
   // watchers
 
   @Watch("_selectedBranch")
-  protected branchChange(newVal: string): void {
-    if (newVal !== null){
-      this.setRankData();
+  public clearRank(newVal: SelectData, oldVal: SelectData): void{
+    const isOldValValid = Object.values(oldVal).every(v=>v!=="")
+    if (isOldValValid){
+      this._selectedRank =  { grade: "", name: "", sysId: ""}
     }
   }
 
+  @Watch("_selectedRank.sysId", {deep: true})
+  public emitRankComponent(): void{
+    this.$emit("rankComponent", this._selectedRank?.sysId)
+  }
+
   // data
-  private branchData: SelectData[] = [];
-  private branchRanksData: AutoCompleteItemGroups = {};
-  private selectedBranchRanksData: AutoCompleteItem[] = [];
-  private salutationData: SelectData[] = [];
+
+  private salutationData: SelectData[] = [
+    { text: "Mr.", value: "MR" },
+    { text: "Mrs.", value: "MRS" },
+    { text: "Miss", value: "MISS" },
+    { text: "Ms.", value: "MS" },
+    { text: "Dr.", value: "DR" },
+  ];
+
   private contactRoles: RadioButton[] = [ // Order reversed based on feedback provided on AT-8846
     {
       id: "Civilian",
@@ -270,56 +276,10 @@ class ATATContactForm extends Vue {
       value: "MILITARY",
     }
   ];
-  private setRankData(): void {
-    if (this._selectedBranch && this._selectedBranch.value) {
-      this.selectedBranchRanksData =
-        this.branchRanksData[this._selectedBranch.value];
-    }
-  }
+  
+ 
 
-  private contactTypeChange(): void {
-    if(this.loaded){
-      this.resetData();
-      this.$emit("resetContactForm");
-    }
 
-  }
-  public resetData(): void {
-    // TODO: REFACTOR AFTER VUE3 UPGRADE
-    // this.$nextTick(() => {
-    //   //iterate over the forms children ref manually set their 'errorMessages' array to empty
-    //   const formChildren = this.$refs.atatGlobalContact.$children;
-    //
-    //   formChildren.forEach((ref)=> {
-    //     ((ref as unknown) as {errorMessages:[], _value: string}).errorMessages = [];
-    //   });
-    //   this.$nextTick(() => {
-    //     this.$refs.atatGlobalContact.reset();
-    //     this.$refs.atatGlobalContact.resetValidation();
-    //   });
-    // });
-  }
-
-  public async loadOnEnter(): Promise<void> {
-    const branches = await ContactData.LoadMilitaryBranches();
-    this.branchData = branches.map((choice) => {
-      const text = `U.S. ${choice.label}`;
-      const { value } = choice;
-      return {
-        text,
-        value,
-      };
-    });
-
-    console.log('overhere', this.branchData)
-
-    this.branchRanksData = ContactData.militaryAutoCompleteGroups;
-    this.salutationData = convertSystemChoiceToSelect(ContactData.salutationChoices);
-  }
-
-  public async mounted(): Promise<void> {
-    await this.loadOnEnter();
-  }
 }
 export default toNative(ATATContactForm)
 </script>

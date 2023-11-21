@@ -59,6 +59,7 @@ import { CSP, SaveOnLeaveRefs } from "../../../../types/Global";
 import { From, To, beforeRouteLeaveFunction } from "@/mixins/saveOnLeave";
 import _ from "lodash";
 import { FairOpportunityDTO } from "@/api/models";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 
 @Component({
@@ -173,8 +174,14 @@ class ProposedCSP extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    this.$refs.form.validate().then(
+      async (response: SubmitEventPromise) =>{
+        this.errorMessages = (await response).errors[0]?.errorMessages;
+      }
+    );
+
     try {
-      if (this.hasChanged()) {
+      if (this.hasChanged() && this.errorMessages.length === 0) {
         await AcquisitionPackage.setFairOpportunity(this.currentData)
       }
     } catch (error) {

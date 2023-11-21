@@ -88,6 +88,7 @@
         </p>
         <ATATTextArea
           id="InformationChange"
+          ref="InformationChange"
           rows="7"
           class="pb-16"
         />
