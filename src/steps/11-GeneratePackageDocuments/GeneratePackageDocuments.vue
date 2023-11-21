@@ -40,12 +40,14 @@ class GeneratingPackageDocuments extends Vue {
   
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    this.isNextClicked = to.query.direction === 'next';
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs, 
       nextTick: this.$nextTick,
     }).catch()
   }
+  public isNextClicked = false;
   public isGenerating = false;
   private isErrored = false;
   private docJobStatus = "" ;
@@ -122,7 +124,7 @@ class GeneratingPackageDocuments extends Vue {
   public async saveOnLeave(): Promise<boolean> {
     this.isGenerating = false; //to restore bottom navigation
     await AcquisitionPackage.setValidateNow(true);
-    if(this.isDitco){
+    if(this.isDitco && this.isNextClicked){
       await AcquisitionPackageSummary.updateAcquisitionPackageStatus({
         acquisitionPackageSysId: AcquisitionPackage.packageId,
         newStatus: "WAITING_FOR_SIGNATURES"
