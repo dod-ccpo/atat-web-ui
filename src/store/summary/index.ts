@@ -662,20 +662,31 @@ export class SummaryStore extends VuexModule {
       isCauseProductFeaturePeculiarToCSP = true
     }
 
-    // validates if sole source cause is generated or custom
+    // validates sole source cause whether it is generated or custom
     let isSoleSourceCause = false;
     isSoleSourceCause = fairOpp.cause_of_sole_source_for_docgen === "GENERATED"
       ? fairOpp.cause_of_sole_source_generated !== ""
       : fairOpp.cause_of_sole_source_custom !== ""
 
+    // we don't care about any of the above if the sole source cause is custom
+    let soleSourceCauseIsCustom = false
+    if (fairOpp.cause_of_sole_source_custom !== "") {
+      soleSourceCauseIsCustom = true
+    }
+
     // validates why CSP is only source capable
     const whyCSPIsOnlyCapableSource = fairOpp.why_csp_is_only_capable_source !== "";
 
-    return isCauseMigrationSelection
+    return (
+      (
+        isCauseMigrationSelection
         && isCauseGovtEngineersComplete
         && isCauseProductFeaturePeculiarToCSP
         && isSoleSourceCause
-        && whyCSPIsOnlyCapableSource;
+      )
+      || soleSourceCauseIsCustom
+    )
+    && whyCSPIsOnlyCapableSource;
   }
 
   @Action({rawError: true})
@@ -758,11 +769,12 @@ export class SummaryStore extends VuexModule {
         || (researchIsCSPOnlySourceCapable === "NO" && !noContractActionAndNoProduct)){
       // By default, `REVIEW_JWCC_CONTRACTS_AND_OR_CONTRACTORS_CATALOG` is selected.
       // Validate that at least 2 items have been selected.
-      hasResearchTechniquesSummary = hasContractAction
-        ? true
-        : (fairOpp.research_other_techniques_used as string).split(",").length>1
-          ? fairOpp.research_techniques_summary !== ""
-          : true
+      if (
+        !hasContractAction && 
+        (fairOpp.research_other_techniques_used as string).split(",").length>1
+      ) {
+        hasResearchTechniquesSummary = fairOpp.research_techniques_summary !== ""
+      }
     }
 
     // if `other` is selected, then validate the `other text box`
@@ -780,8 +792,16 @@ export class SummaryStore extends VuexModule {
       ? fairOpp.research_details_generated !== ""
       : fairOpp.research_details_custom !== ""
 
+
+    // we don't care about hasResearchIsCSPOnlySourceCapablee if the sole source cause is custom
+    let researchDetailsCustom = false
+    if (fairOpp.research_details_custom !== "") {
+      researchDetailsCustom = true
+    }
+
+
     //todo eval to true
-    return hasResearchIsCSPOnlySourceCapable
+    return (hasResearchIsCSPOnlySourceCapable || researchDetailsCustom)
         && hasResearchReviewCatalogsReviewed
         && isOtherOptionSelected
         && hasOtherTechniques
@@ -844,11 +864,21 @@ export class SummaryStore extends VuexModule {
       ? fairOpp.barriers_plans_to_remove_generated!== ""
       : fairOpp.barriers_plans_to_remove_custom !== ""
 
-    return hasFollowOnRequirement
-        && isAgencyPursuingTrainingOrCerts
-        && isPlanningFutureDevleopment
-        && isJAPrepared
-        && hasPlansToRemoveBarriers
+
+    // we don't care hasResearchIsCSPOnlySourceCapablee if the sole source cause is custom
+    let researchDetailsCustom = false
+    if (fairOpp.research_details_custom !== "") {
+      researchDetailsCustom = true
+    }
+
+
+    return ((
+      hasFollowOnRequirement
+      && isAgencyPursuingTrainingOrCerts
+      && isPlanningFutureDevleopment
+      && isJAPrepared
+    ) || researchDetailsCustom)
+    && hasPlansToRemoveBarriers
   }
 
   @Action({rawError: true})
