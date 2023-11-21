@@ -1,10 +1,10 @@
 <template>
+  <v-form ref="contactForm" lazy-validation="true">
   <div>
     <h2>{{ sequence }}. Tell us about your {{ POCType }} POC</h2>
     <ATATRadioGroup
-        v-if="loaded"
         :id="POCType + 'certificationPOCType'"
-        :ref="POCType + 'certificationPOCTypeRef'"
+        ref="certificationPOCTypeRef"
         :legend="'Will any of these individuals serve as the '
               + POCType + ' Certifier for your J&A?'"
         :legend-font-normal-weight="true"
@@ -52,8 +52,13 @@
         :loaded="loaded"
         :validation-msg-custom="'your ' + POCType + ' POC’s'"
         @resetContactForm="resetContactForm"
+        @rankComponent = "setRankComponent"
+        :contactRoles="contactRoles"
+        :branchData="branchData"
+        :selectedBranchRanksData="selectedBranchRanksData"
     />
   </div>
+</v-form>
 </template>
 
 <script lang="ts">
@@ -61,12 +66,14 @@
 import { Component, Prop,  Watch, Vue, toNative } from "vue-facing-decorator";
 import { CountryObj, RadioButton, RankData, SelectData } from "../../../../types/Global";
 import ATATRadioGroup from "@/components/ATATRadioGroup.vue";
-import { ContactDTO, FinancialPOCType } from "@/api/models";
+import { ContactDTO, FinancialPOCType, ReferenceColumn } from "@/api/models";
 import ContactData from "@/store/contactData";
 import parsePhoneNumber, { AsYouType, CountryCode } from "libphonenumber-js";
 import { Countries } from "@/components/ATATPhoneInput.vue";
 import ATATContactForm from "@/components/ATATContactForm.vue";
 import { PropSync } from "@/decorators/custom"
+import { ComponentPublicInstance } from "vue";
+import { SubmitEventPromise } from "vuetify/lib/framework.mjs";
 
 
 @Component({
@@ -77,6 +84,17 @@ import { PropSync } from "@/decorators/custom"
 })
 
 class CertificationPOCTypeForm extends Vue {
+  $refs!: {
+    [key: string]: ComponentPublicInstance & {
+      validate: ()=> Promise<SubmitEventPromise>,
+        $refs: {
+        [key: string]: ComponentPublicInstance & {
+          validate: ()=> Promise<SubmitEventPromise>,
+        };
+      }
+    };
+  }; 
+
   @Prop({default: "Technical"}) private POCType!: "Technical" | "Requirements";
   @Prop({default: "1"}) private sequence!: string;
   @Prop() private pocPrimary!: ContactDTO;
@@ -86,6 +104,7 @@ class CertificationPOCTypeForm extends Vue {
   @PropSync("selectedSysId") private _selectedSysId?: string;
   @PropSync("selectedPocType") private _selectedPocType?: string;
 
+
   private POCTypePropName: "technical_poc_type" | "requirements_poc_type" = "technical_poc_type";
   private POCPropName: "technical_poc" | "requirements_poc" = "technical_poc";
   private certificationPOCTypeOptions: RadioButton[] = [];
@@ -94,12 +113,30 @@ class CertificationPOCTypeForm extends Vue {
 
   private phone = "";
   private selectedBranch: SelectData = { text: "", value: "" };
-  private selectedRank: RankData = {grade: "", name: "", sysId: ""};
+  private selectedRank: RankData = {
+    grade: "",
+    name: "",
+    sysId: ""
+  };
+  private selectedBranchRanksData: RankData[] = [];
+  private branchRanksData!: { [key: string]: RankData[]; };
   
   public resetContactForm(): void {
     this.phone = "";
     this.selectedBranch = {};
     this.selectedRank = {grade: "", name: "", sysId: ""};
+  }
+
+  @Watch("selectedBranch")
+  protected branchChange(): void {
+    this.setRankData();
+  }
+
+  private setRankData(): void {
+    if (Object.values(this.selectedBranch).every(v=>v!=="")) {
+      this.selectedBranchRanksData =
+        this.branchRanksData[this.selectedBranch.value as string];
+    }
   }
 
   @Watch("selectedRank")
@@ -118,6 +155,14 @@ class CertificationPOCTypeForm extends Vue {
   @Watch("selectedPhoneCountry")
   public phoneCountryChanged(): void {
     this.formatPhone();
+  }
+
+  public setRankComponent(rc: string): void{
+    this._newContactData.rank_components = rc;
+  }
+
+  public async validateForm(): Promise<boolean> {
+    return (await this.$refs.certificationPOCTypeRef.$refs.atatRadioButtonGroup.validate()).valid;
   }
 
   public formatPhone(): void {
@@ -178,12 +223,12 @@ class CertificationPOCTypeForm extends Vue {
    */
   private get selectedOption(): RadioButton {
     const selectedOption = this.certificationPOCTypeOptions.find(certOption =>
-      certOption.value === this._selectedSysId) as RadioButton
+      certOption.value === this._selectedSysId)
     if(selectedOption){
       this._selectedSysId = selectedOption.value
       this._selectedPocType = selectedOption.optionType
     }
-    return selectedOption
+    return selectedOption as RadioButton;
   }
 
   /**
@@ -255,13 +300,8 @@ class CertificationPOCTypeForm extends Vue {
 
     // if contact is MILITARY, load branches, set selectedBranch and selectedRank based on 
     // rank_components which is sys_id of selected rank
-    if (this._newContactData.role === this.contactRoles[this.roleIndices.MILITARY].value) {
-      const branches = await ContactData.LoadMilitaryBranches();
-      this.branchData = branches.map((choice) => {
-        const text = `U.S. ${choice.label}`;
-        const { value } = choice;
-        return {text, value};
-      });      
+    if (this._newContactData.role === "MILITARY") {
+      
       //retrieve selected Military Rank from rank component
       const rank = await ContactData.GetMilitaryRank(this._newContactData.rank_components);
       if (rank) {
@@ -298,8 +338,23 @@ class CertificationPOCTypeForm extends Vue {
   }
 
   public async mounted(): Promise<void> {
+    await this.getBranchData();
+    await this.getRanksData();
     await this.loadOnEnter();
   }
+
+  public async getBranchData(): Promise<void> {
+    this.branchData = (await ContactData.LoadMilitaryBranches()).map((choice) => {
+      const text = `U.S. ${choice.label}`;
+      const { value } = choice;
+      return {text, value};
+    }); 
+  }
+
+  public async getRanksData(): Promise<void>{
+    this.branchRanksData = ContactData.militaryAutoCompleteGroups;
+  }
+
 }
 
 export default toNative(CertificationPOCTypeForm )

@@ -196,7 +196,7 @@ import {
 } from "../../types/Global";
 
 @Component({
-  emits: ["resetContactForm"],
+  emits: ["rankComponent"],
   components: {
     ATATAutoComplete,
     ATATPhoneInput,
@@ -249,7 +249,13 @@ class ATATContactForm extends Vue {
     }
   }
 
+  @Watch("_selectedRank.sysId", {deep: true})
+  public emitRankComponent(): void{
+    this.$emit("rankComponent", this._selectedRank?.sysId)
+  }
+
   // data
+
   private salutationData: SelectData[] = [
     { text: "Mr.", value: "MR" },
     { text: "Mrs.", value: "MRS" },

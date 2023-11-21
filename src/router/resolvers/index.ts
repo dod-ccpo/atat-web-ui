@@ -127,19 +127,18 @@ const missingEvalPlanMethod = (evalPlan: EvaluationPlanDTO): boolean => {
 }
 
 export const ExceptionToFairOpportunityResolver = (current: string): string => {
-  const isFromStepOne =
-		// eslint-disable-next-line max-len
-		[
-		  routeNames.AcorInformation,
-		  routeNames.AlternateCor,
-		  routeNames.SummaryStepOne
-		].includes(current)
+  const isFromStepOne = [
+		  routeNames.AcorInformation,routeNames.AlternateCor,routeNames.SummaryStepOne
+  ].includes(current);
   Summary.setHasCurrentStepBeenVisited(isStepTouched(2))
-  return isFromStepOne
-    ? Summary.hasCurrentStepBeenVisited
+  if (isFromStepOne){
+    return Summary.hasCurrentStepBeenVisited
       ? routeNames.SummaryStepTwo
       : routeNames.Exceptions
-    : routeNames.SummaryStepTwo
+  } else if (current === routeNames.ProposedCSP){
+    return routeNames.Exceptions
+  } 
+  return routeNames.SummaryStepTwo
 }
 
 export const EvalPlanRouteResolver = (current: string): string => {
