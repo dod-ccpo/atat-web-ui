@@ -626,7 +626,10 @@ class PortfolioDashboard extends Vue {
   public burnChartXLabels: string[] = [];
   public burnChartYMax = 0;
   public burnChartYStepSize = 0;
-  public tooltipHeaderData: Record<string, string> = {};
+  public tooltipHeaderData = {
+    title: "Total Funds Available",
+    legend: "Funds Available",
+  };
 
   public get portfolioStatus(): string {
     return PortfolioStore.currentPortfolio.status as string;
@@ -1242,13 +1245,6 @@ class PortfolioDashboard extends Vue {
     this.estimatedFundsAvailable = parseFloat(fundsData?.estimatedFundsAvailable as string);
     await this.setBurnChartYAxis();
   
-    this.tooltipHeaderData = {
-      title: "Total Funds Available",
-      amount: this.getCurrencyString(this.availableFunds),
-      legend: "Funds Available",
-    };
-    
-
     if (!isNaN(this.fundsSpentPercent)) {
       if (this.fundsSpentPercent >= 99.9 && this.fundsSpentPercent < 100) {
         // if ALMOST 100%, due to rounding, don't set at 100% spent
