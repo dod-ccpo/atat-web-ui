@@ -48,7 +48,7 @@ interface EnvironmentForProvisioning {
   isMigration?: boolean;
 }
 
-export interface CSPProvisioningData {
+export interface CSPEnvironmentData {
   name: string;
   classification_level?: string;
   cloud_distinguisher?: CloudDistinguisher;
@@ -188,7 +188,7 @@ export class PortfolioDataStore extends VuexModule {
     return this.portfolioProvisioningObj;
   }
 
-  public CSPProvisioningData: CSPProvisioningData[] = [];
+  public CSPEnvironmentData: CSPEnvironmentData[] = [];
   public CSPHasImpactLevels = false;
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
@@ -201,7 +201,7 @@ export class PortfolioDataStore extends VuexModule {
   @Action({ rawError: true})
   public async setCSPProvisioningData(): Promise<void> {
     try {
-      let cspData: CSPProvisioningData[] = [];
+      let cspData: CSPEnvironmentData[] = [];
       let hasCloudDistinguishers = false;
       const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
       const response = await api.cloudServiceProviderTable.getQuery({
@@ -212,7 +212,7 @@ export class PortfolioDataStore extends VuexModule {
         }
       });
       response.forEach(obj => {
-        const csp: CSPProvisioningData = { 
+        const csp: CSPEnvironmentData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
           cloud_distinguisher: undefined,
@@ -238,11 +238,11 @@ export class PortfolioDataStore extends VuexModule {
   }
   @Mutation
   public async doSetCSPProvisioningData(data: {
-    cspData: CSPProvisioningData[],
+    cspData: CSPEnvironmentData[],
     hasCloudDistinguishers: boolean
   }
   ): Promise<void> {
-    this.CSPProvisioningData = data.cspData;
+    this.CSPEnvironmentData = data.cspData;
     this.CSPHasImpactLevels = data.hasCloudDistinguishers;
   }
 
@@ -293,11 +293,11 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
 
-      const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
+      const unclassCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "U");
       const unclassName = unclassCSP?.name as string;
-      const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
+      const scrtCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "S");
       const scrtName = scrtCSP?.name as string;
-      const tsCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "TS");
+      const tsCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "TS");
       const tsName = tsCSP?.name as string;
       console.log(this.portfolioProvisioningObj)
 
@@ -921,7 +921,7 @@ export class PortfolioDataStore extends VuexModule {
     this.showTOPackageSelection = true;
     this.portfolioCreator = {};
     this.selectedAcquisitionPackageSysId = "";
-    this.CSPProvisioningData = [];
+    this.CSPEnvironmentData = [];
     this.CSPHasImpactLevels = false;    
     this.envsForProvisioning = [];
     this.activeTaskOrderNumber = "";

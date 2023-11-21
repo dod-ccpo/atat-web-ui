@@ -41,10 +41,8 @@
                 class="_input-max-width mb-10"
                 label="What service or agency is this portfolio affiliated with?"
                 :label-sr-only="false"
-                titleKey="text"
                 :searchFields="['text']"
                 :items="agencyData"
-                :returnObject="true"
                 :selectedItem="serviceOrAgency"
                 @update:selectedItem="serviceOrAgency = $event"
                 :rules="[$validators.required('Please select your service or agency.')]"
@@ -88,7 +86,7 @@
                   {'_unclassified': isILUnclassified(item)},
                   {'_section-error': showUnclassifiedSelectionError},
                   {'_first-row': index === 0},
-                  {'_last-row': index === CSPProvisioningData.length - 1}
+                  {'_last-row': index === CSPEnvironmentData.length - 1}
                 ]"
               >
                 <v-radio-group 
@@ -183,7 +181,7 @@ class PortfolioDetails extends Vue {
   }
 
   public portfolioTitle = "";
-  public serviceOrAgency: SelectData = {};
+  public serviceOrAgency: SelectData = {text: "", value: ""};
   public envSectionLabel = "";
   public envSectionHelpText = "";
 
@@ -203,7 +201,7 @@ class PortfolioDetails extends Vue {
     IL5: "Unclassified environment for workloads <strong>up to IL5</strong>",
   }
   
-  public CSPProvisioningData = PortfolioStore.CSPProvisioningData; // all CLs (with U ILs) in T.O.
+  public CSPEnvironmentData = PortfolioStore.CSPEnvironmentData; // all CLs (with U ILs) in T.O.
 
   public unclassifiedILs = ["IL2", "IL4", "IL5"];
   public isILUnclassified(radio: RadioButton): boolean {
@@ -211,13 +209,13 @@ class PortfolioDetails extends Vue {
   }
 
   public isLastUnclassified(radio: RadioButton, index: number): boolean {
-    const hasNextEnv = this.CSPProvisioningData.length > index + 1;
-    const lastEnvIsUnclass = index + 1 === this.CSPProvisioningData.length 
+    const hasNextEnv = this.CSPEnvironmentData.length > index + 1;
+    const lastEnvIsUnclass = index + 1 === this.CSPEnvironmentData.length 
       && this.unclassifiedILs.includes(radio.additionalData as string);
     if (this.hasUnclassified 
       && (lastEnvIsUnclass || (this.unclassifiedILs.includes(radio.additionalData as string) 
       && hasNextEnv && !this.unclassifiedILs.includes(
-        this.CSPProvisioningData[index + 1].highest_information_protection_level)
+        this.CSPEnvironmentData[index + 1].highest_information_protection_level)
       ))
     ) {
       return true; 
@@ -271,14 +269,15 @@ class PortfolioDetails extends Vue {
   public unclassifiedILsSelected: string[] = [];
   public unclassifiedILsInTaskOrder: string[] = [];
   public unclassifiedErrorOnContinue = false;
-  
+  public unclassifiedNotApplicableDisabled = false;
+
   public get showDescriptions(): boolean {
     return this.unclassifiedILsInTaskOrder.length > 1;
   }
 
   public radioGroupUpdate(index: number): void {
-    const IL = this.CSPProvisioningData[index].highest_information_protection_level;
-    const isUnclass = this.CSPProvisioningData[index].classification_level === "U";
+    const IL = this.CSPEnvironmentData[index].highest_information_protection_level;
+    const isUnclass = this.CSPEnvironmentData[index].classification_level === "U";
     const selectionNotNull = this.envsInTaskOrder[index].isMigration !== null;
     debugger;
     if (isUnclass && !this.unclassifiedILsSelected.includes(IL) && selectionNotNull) {
@@ -288,8 +287,8 @@ class PortfolioDetails extends Vue {
   }
 
   public radioGroupBlurred(index: number): void {
-    const blurredIL = this.CSPProvisioningData[index].highest_information_protection_level;
-    const isUnclass = this.CSPProvisioningData[index].classification_level === "U";
+    const blurredIL = this.CSPEnvironmentData[index].highest_information_protection_level;
+    const isUnclass = this.CSPEnvironmentData[index].classification_level === "U";
     if (isUnclass && !this.unclassifiedILsBlurred.includes(blurredIL)) {
       this.unclassifiedILsBlurred.push(blurredIL);
     }
@@ -305,16 +304,16 @@ class PortfolioDetails extends Vue {
   
 
   public getClassificationLevelsInTOString(): string {
-    return convertStringArrayToCommaList(this.classificationLevelsInTaskOrder, "and", true);
-
+    const str = convertStringArrayToCommaList(this.classificationLevelsInTaskOrder, "and", true);
+    return this.classificationLevelsInTaskOrder.length > 1 ? str + " levels" : str + " level";
   }
   
   public async setTaskOrderData(): Promise<void> {
-    const storeData = _.cloneDeep(PortfolioStore.portfolioProvisioningObj);
-    if (storeData) {
-      this.portfolioTitle = storeData.portfolioTitle as string;
+    this.portfolioProvisioningObj = _.cloneDeep(PortfolioStore.portfolioProvisioningObj);
+    if (this.portfolioProvisioningObj) {
+      this.portfolioTitle = this.portfolioProvisioningObj.portfolioTitle as string;
       const selectedServiceOrAgency 
-        = this.agencyData.find(obj => obj.value === storeData.serviceOrAgency);
+        = this.agencyData.find(obj => obj.value === this.portfolioProvisioningObj.serviceOrAgency);
       if (selectedServiceOrAgency) {
         this.serviceOrAgency = selectedServiceOrAgency;
       }
@@ -322,21 +321,23 @@ class PortfolioDetails extends Vue {
       this.savedData = {
         portfolioTitle:  this.portfolioTitle,
         serviceOrAgency: this.serviceOrAgency.value,
-        environments: storeData.environments,
+        environments: this.portfolioProvisioningObj.environments,
       }
  
-      this.classificationLevelsInTaskOrder = storeData.classificationLevels as string[];
-      
+      this.classificationLevelsInTaskOrderStr = this.getClassificationLevelsInTOString();
+      this.classificationLevelsInTaskOrder = 
+        this.portfolioProvisioningObj.classificationLevels as string[];
+
       this.envSectionHelpText = `Based on your task order details, you have
-      funding for ${ this.classificationLevelsInTaskOrderStr }
-      levels. For each option below, select whether you need to provision a new environment or
+      funding for ${ this.classificationLevelsInTaskOrderStr }. For each option below, 
+      select whether you need to provision a new environment or
       transfer billing for an existing cloud environment to your JWCC task order.`
       this.envSectionLabel = this.selectedPackage ? "": `2. Tell us about your cloud environments`
 
-      if (!storeData.environments) {
+      if (!this.portfolioProvisioningObj.environments) {
         this.envsInTaskOrder = await this.buildEnvsInTaskOrder();
       } else {
-        this.envsInTaskOrder = storeData.environments;
+        this.envsInTaskOrder = this.portfolioProvisioningObj.environments;
       }
       this.envsInTaskOrder = this.envsInTaskOrder.sort(
         (a,b) => { return a.cspName && b.cspName  ? a.cspName > b.cspName ? 1 : -1 : 0; }
@@ -347,7 +348,7 @@ class PortfolioDetails extends Vue {
 
   public async buildEnvsInTaskOrder(): Promise<Partial<ProvisioningEnv>[]> {
     const envs: Partial<ProvisioningEnv>[] = [];
-    this.CSPProvisioningData.forEach(c => {
+    this.CSPEnvironmentData.forEach(c => {
       const env: Partial<ProvisioningEnv> = {
         cspName: c.name,
         isMigration: undefined,
@@ -359,34 +360,54 @@ class PortfolioDetails extends Vue {
   }
   
   public async buildEnvironmentRadioGropus(): Promise<void> {
-    this.CSPProvisioningData.forEach(env => {
-      let label = "";
-      let description = undefined;
- 
-      if (env.classification_level === "U") {
-        this.hasUnclassified = true;
-        this.unclassifiedILsInTaskOrder.push(env.highest_information_protection_level);
-        label = env.cloud_distinguisher?.display_name 
-          ? env.cloud_distinguisher?.display_name
-          : "Unclassified";
-        description = 
-          this.unclassifiedILDescriptions[env.highest_information_protection_level as string];
-      } else {
-        label = env.classification_level === "S" ? "Secret" : "Top Secret";
-      }
-      const radioData = { 
-        id: env.name,
-        label,
-        description,
-        value: env.classification_level as string,
-        additionalData: env.highest_information_protection_level,
-      };
+    const unclassCount = 
+      this.CSPEnvironmentData.filter(obj => obj.classification_level === "U").length;
+    this.unclassifiedNotApplicableDisabled = unclassCount === 1;
 
-      this.envRadioGroups.push(radioData)
+    const classificationLevelAbbrs: Record<string, string> = {
+      "Unclassified": "U",
+      "Secret": "S",
+      "Top Secret": "TS"
+    }
+
+    this.classificationLevelsInTaskOrder.forEach((cl: string) => {
+      const clAbbr = classificationLevelAbbrs[cl];
+
+      const envs = this.CSPEnvironmentData.filter(obj => obj.classification_level === clAbbr);
+      envs.forEach(env => {
+        let label = "";
+        let description = undefined;
+  
+        if (env.classification_level === "U") {
+          this.hasUnclassified = true;
+          this.unclassifiedILsInTaskOrder.push(env.highest_information_protection_level);
+          label = env.cloud_distinguisher?.display_name && unclassCount > 1
+            ? env.cloud_distinguisher?.display_name
+            : "Unclassified";
+          description = unclassCount > 1
+            ? this.unclassifiedILDescriptions[env.highest_information_protection_level]
+            : "";
+        } else {
+          label = env.classification_level === "S" ? "Secret" : "Top Secret";
+        }
+        const radioData = { 
+          id: env.name,
+          label,
+          description,
+          value: env.classification_level as string,
+          additionalData: env.highest_information_protection_level,
+        };
+
+        this.envRadioGroups.push(radioData)
+        
+      })
+
     })
+
   }
   public isRadioDisabled(classificationLevel: string): boolean {
-    return classificationLevel === "S" || classificationLevel === "TS";
+    return classificationLevel === "S" || classificationLevel === "TS"
+      || this.unclassifiedNotApplicableDisabled;
   }
 
 
@@ -394,8 +415,6 @@ class PortfolioDetails extends Vue {
     if (!OrganizationData.agency_data || OrganizationData.agency_data.length === 0) {
       await OrganizationData.getAgencyData();
     }
-    debugger;
-
     this.agencyData = convertAgencyRecordToSelect(OrganizationData.agency_data); 
     await this.setTaskOrderData();
   }
@@ -405,18 +424,15 @@ class PortfolioDetails extends Vue {
   }
 
   public async saveOnLeave(): Promise<boolean> {
-    debugger;
     try {
       this.unclassifiedErrorOnContinue = 
         this.hasUnclassified && this.unclassifiedILsSelected.length === 0;;
-      debugger;
       if (this.unclassifiedErrorOnContinue) return false;
       await PortfolioStore.setPortfolioProvisioning(this.currentData);
     } catch (error) {
       console.error(error);
     }
-    // return true;
-    return false;
+    return true;
   }
 
 }
