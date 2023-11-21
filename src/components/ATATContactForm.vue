@@ -250,7 +250,14 @@ class ATATContactForm extends Vue {
   }
 
   // data
-  private salutationData: SelectData[] = [];
+  private salutationData: SelectData[] = [
+    { text: "Mr.", value: "MR" },
+    { text: "Mrs.", value: "MRS" },
+    { text: "Miss", value: "MISS" },
+    { text: "Ms.", value: "MS" },
+    { text: "Dr.", value: "DR" },
+  ];
+
   private contactRoles: RadioButton[] = [ // Order reversed based on feedback provided on AT-8846
     {
       id: "Civilian",
