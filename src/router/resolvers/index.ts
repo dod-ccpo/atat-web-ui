@@ -35,9 +35,13 @@ export const showDITCOPageResolver = (current: string): string => {
 
 export const ContractingInfoResolver = (current: string): string => {
   const isNotDITCO = AcquisitionPackage.contractingShop === 'OTHER'
-  return isNotDITCO
-    ? routeNames.ContractingOfficeInfo
-    : routeNames.ProjectOverview
+  const isFromContractingShop = current === routeNames.ContractingShop;
+  if (isNotDITCO && isFromContractingShop){
+    return routeNames.ContractingOfficeInfo
+  } else if(isFromContractingShop){
+    return routeNames.ProjectOverview
+  }
+  return routeNames.ContractingShop
 }
 
 export const ProjectOverviewResolver = (current: string): string => {
