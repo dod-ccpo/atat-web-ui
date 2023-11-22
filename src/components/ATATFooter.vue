@@ -19,24 +19,28 @@
           <hr />
           <div class="d-flex mb-10">
 
-            <v-switch 
-              id="developerToggleButton"
-              v-model="developerNavState"
-              label="Developer Navigation"
-              class="mr-10"
-              color="indigo"
-              :inset="true"
-            >
-            </v-switch>
-
-            <v-switch 
-              id="productionToggleButton"
-              v-model="prodContent"
-              label="Production Content"
-              color="indigo"
-              :inset="true"
-            >
-            </v-switch>
+            <div id="DevNavToggle">
+              <v-switch 
+                id="developerToggleButton"
+                v-model="developerNavState"
+                label="Developer Navigation"
+                class="mr-10"
+                color="indigo"
+                :inset="true"
+              >
+              </v-switch>
+            </div>
+            
+            <div id="ProdToggle">
+              <v-switch 
+                id="productionToggleButton"
+                v-model="prodContent"
+                label="Production Content"
+                color="indigo"
+                :inset="true"
+              >
+              </v-switch>
+            </div>
           </div>
         </div>
       </v-col>

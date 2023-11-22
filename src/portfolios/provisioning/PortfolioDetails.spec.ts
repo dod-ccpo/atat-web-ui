@@ -5,7 +5,7 @@ import { DefaultProps } from "vue/types/options";
 import Vue from "vue";
 import PortfolioDetails from "./PortfolioDetails.vue";
 import validators from "@/plugins/validation";
-import PortfolioStore, { CSPProvisioningData } from "@/store/portfolio";
+import PortfolioStore, { CSPEnvironmentData } from "@/store/portfolio";
 import OrganizationData from "@/store/organizationData";
 
 const mockCspProvisionData = [
@@ -42,10 +42,10 @@ describe("Testing PortfolioDetails Component", () => {
     const mockBuildILCheckbox = jest.spyOn(wrapper.vm, 'buildILCheckboxItems').mockImplementation()
     jest.spyOn(OrganizationData, 'getAgencyData').mockImplementation()
     await PortfolioStore.doSetCSPProvisioningData({
-      cspData: mockCspProvisionData as CSPProvisioningData[],
+      cspData: mockCspProvisionData as CSPEnvironmentData[],
       hasCloudDistinguishers: true
     })
-    await wrapper.setData({CSPProvisioningData: mockCspProvisionData})
+    await wrapper.setData({CSPEnvironmentData: mockCspProvisionData})
     await wrapper.vm.loadOnEnter()
     expect(mockBuildILCheckbox).toHaveBeenCalled()
   });
@@ -54,7 +54,7 @@ describe("Testing PortfolioDetails Component", () => {
       classificationLevels: ["Unclassified"],
     })
     await PortfolioStore.doSetCSPProvisioningData({
-      cspData: mockCspProvisionData as CSPProvisioningData[],
+      cspData: mockCspProvisionData as CSPEnvironmentData[],
       hasCloudDistinguishers: true
     })
     await wrapper.setData({checkBoxItems: mockCspProvisionData})

@@ -346,6 +346,68 @@ textarea {
     background-color: $base-lightest
   }
 }
+._environments-table{
+  table{
+    border-collapse: collapse;
+    border: solid 2px transparent;
+  }
+  ._environment{
+  &-description{
+    font-weight: 400;
+    font-size: 14px;
+    color: $base;
+  }
+  &-label{
+    font-weight: 500;
+    font-size: 16px;
+    color: $base-darkest;
+
+  }
+  &-info{
+    padding: 16px 24px 16px 24px;
+  }
+}
+  thead{
+    background-color: $base-lightest;
+  }
+  th{
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    color: $base-dark;
+  }
+  th:first-of-type{
+    padding: 12px 12px 12px 24px;
+    width: 408px;
+    div{
+      justify-content: start !important;
+    }
+  }
+  td{
+    padding: 0px !important;
+  }
+
+
+  ._validation-error{
+    border:2px solid $error;
+    ._atat-alert{
+      border:none;
+      border-radius: 0;
+      border-top: 2px solid $error;
+    }
+    ._error-message{
+    color: $error;
+    .emphasis{
+      font-size: 16px;
+      font-weight: 700;
+      text-align: left;
+    }
+    font-size: 16px;
+    font-weight: 500;
+    text-align: left;
+    }
+  }
+}
 
 ._clin-table,
 ._csp-admin-log.v-table {

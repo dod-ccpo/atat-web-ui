@@ -103,6 +103,7 @@ class ContractingShop extends Vue {
 
   @Hook
   public async beforeRouteLeave(to: To, from: From) {
+    debugger;
     return await beforeRouteLeaveFunction({ to, from, 
       saveOnLeave: this.saveOnLeave, 
       form: this.$refs as SaveOnLeaveRefs,
@@ -206,6 +207,7 @@ class ContractingShop extends Vue {
   }
 
   protected async saveOnLeave(): Promise<boolean> {
+    debugger;
     await AcquisitionPackage.setContractingShop(this.contractingShop);
     await AcquisitionPackage.updateAcquisitionPackage();
     return true;

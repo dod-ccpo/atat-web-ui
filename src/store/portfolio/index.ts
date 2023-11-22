@@ -7,7 +7,7 @@ import {
   Portfolio,
   PortfolioDetailsDTO,
   PortfolioDTO,
-  PortfolioProvisioning,
+  PortfolioProvisioningObj,
   PortfolioSummaryQueryParams,
   User,
 } from "../../../types/Global"
@@ -44,13 +44,15 @@ interface CSPAdmin {
 }
 interface EnvironmentForProvisioning {
   cspName: string;
-  operators: CSPAdmin[]
+  operators: CSPAdmin[];
+  isMigration?: boolean;
 }
 
-export interface CSPProvisioningData {
+export interface CSPEnvironmentData {
   name: string;
   classification_level?: string;
   cloud_distinguisher?: CloudDistinguisher;
+  highest_information_protection_level: string;
 }
 
 interface CloudDistinguisher {
@@ -68,7 +70,7 @@ export const cspConsoleURLs: Record<string, string> = {
   oracle: "https://console.oraclecloud.com",
 }
 
-const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
+const initialPortfolioProvisioningObj = (): PortfolioProvisioningObj => {
   return {
     taskOrderNumber: "",
     contractor: "",
@@ -82,7 +84,7 @@ const initialPortfolioProvisioningObj = (): PortfolioProvisioning => {
     classificationLevels: [],
     portfolioTitle: "",
     serviceOrAgency: "",
-    admins: [],  
+    environments: [],
   }
 }
 
@@ -178,15 +180,15 @@ export class PortfolioDataStore extends VuexModule {
     return this.selectedPortfolioPackageSysId;
   }
   
-  public portfolioProvisioningObj: PortfolioProvisioning 
+  public portfolioProvisioningObj: Partial<PortfolioProvisioningObj>
     = _.cloneDeep(initialPortfolioProvisioningObj());
  
   @Action({rawError: true})
-  public async getPortfolioProvisioningObj(): Promise<PortfolioProvisioning> {
+  public async getPortfolioProvisioningObj(): Promise<Partial<PortfolioProvisioningObj>> {
     return this.portfolioProvisioningObj;
   }
 
-  public CSPProvisioningData: CSPProvisioningData[] = [];
+  public CSPEnvironmentData: CSPEnvironmentData[] = [];
   public CSPHasImpactLevels = false;
   public get doesCSPHaveImpactLevels(): boolean {
     return this.CSPHasImpactLevels;
@@ -199,20 +201,22 @@ export class PortfolioDataStore extends VuexModule {
   @Action({ rawError: true})
   public async setCSPProvisioningData(): Promise<void> {
     try {
-      let cspData: CSPProvisioningData[] = [];
+      let cspData: CSPEnvironmentData[] = [];
       let hasCloudDistinguishers = false;
       const csp = this.portfolioProvisioningObj.csp?.toUpperCase();
       const response = await api.cloudServiceProviderTable.getQuery({
         params: {
-          sysparm_fields: "name,cloud_distinguisher,classification_level",
+          sysparm_fields: 
+            "name,cloud_distinguisher,classification_level,highest_information_protection_level",
           sysparm_query: "vendorIN" + csp
         }
       });
       response.forEach(obj => {
-        const csp: CSPProvisioningData = { 
+        const csp: CSPEnvironmentData = { 
           name: obj.name, 
           classification_level: obj.classification_level,
-          cloud_distinguisher: undefined
+          cloud_distinguisher: undefined,
+          highest_information_protection_level: obj.highest_information_protection_level,
         };
         const cd = obj.cloud_distinguisher;
         if (cd && cd.length) {
@@ -224,7 +228,9 @@ export class PortfolioDataStore extends VuexModule {
       });
       const unclassCount = cspData.filter(e => e.classification_level === "U").length;
       hasCloudDistinguishers = unclassCount > 1 ? hasCloudDistinguishers : false;
-      cspData = cspData.sort((a,b) => a.name > b.name ? 1 : -1)
+      cspData = cspData.sort((a,b) => 
+        a.highest_information_protection_level > b.highest_information_protection_level ? 1 : -1
+      );
       await this.doSetCSPProvisioningData({cspData, hasCloudDistinguishers});
     } catch (error) {
       console.error(error);
@@ -232,11 +238,11 @@ export class PortfolioDataStore extends VuexModule {
   }
   @Mutation
   public async doSetCSPProvisioningData(data: {
-    cspData: CSPProvisioningData[],
+    cspData: CSPEnvironmentData[],
     hasCloudDistinguishers: boolean
   }
   ): Promise<void> {
-    this.CSPProvisioningData = data.cspData;
+    this.CSPEnvironmentData = data.cspData;
     this.CSPHasImpactLevels = data.hasCloudDistinguishers;
   }
 
@@ -245,6 +251,7 @@ export class PortfolioDataStore extends VuexModule {
   public addEnvForProvisioning(data: { 
     cspName: string, admin: CSPAdmin}
   ): void {
+    debugger
     const i = this.envsForProvisioning.findIndex(obj => obj.cspName === data.cspName);
     if (i > -1) {
       this.envsForProvisioning[i].operators.push(data.admin);
@@ -286,42 +293,47 @@ export class PortfolioDataStore extends VuexModule {
         }
       }
 
-      const unclassCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "U");
+      const unclassCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "U");
       const unclassName = unclassCSP?.name as string;
-      const scrtCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "S");
+      const scrtCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "S");
       const scrtName = scrtCSP?.name as string;
-      const tsCSP = this.CSPProvisioningData.find(obj => obj.classification_level === "TS");
+      const tsCSP = this.CSPEnvironmentData.find(obj => obj.classification_level === "TS");
       const tsName = tsCSP?.name as string;
+      console.log(this.portfolioProvisioningObj)
 
-      this.portfolioProvisioningObj.admins?.forEach(admin => {
-        if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
-          if (admin.impactLevels && admin.impactLevels.length) {
-            const dodId = admin.DoDId;
-            const email = admin.unclassifiedEmail;
-            admin.impactLevels.forEach(il => {
-              const adm: CSPAdmin = { dodId, email }
-              this.addEnvForProvisioning({ cspName: il, admin: adm });
-            });
-          } else {
-            const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
-            this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
-          }      
-        }
-        if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
-          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
-          this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
-        }
-        if (admin.hasTSAccess && admin.tsEmail && admin.DoDId) {
-          const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.tsEmail};
-          this.addEnvForProvisioning({ cspName: tsName, admin: adm });
-        }
-      });
+      // EJY YEAH THIS NEEDS REFACTORING
+      // this.portfolioProvisioningObj.admins?.forEach(admin => {
+      //   if (admin.hasUnclassifiedAccess && admin.unclassifiedEmail && admin.DoDId) {
+      //     debugger
+      //     if (admin.impactLevels && admin.impactLevels.length) {
+      //       const dodId = admin.DoDId;
+      //       const email = admin.unclassifiedEmail;
+      //       admin.impactLevels.forEach(il => {
+      //         const adm: CSPAdmin = { dodId, email }
+      //         console.log(il, 'il')
+      //         this.addEnvForProvisioning({ cspName: il, admin: adm });
+      //       });
+      //     } else {
+      //       const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.unclassifiedEmail};
+      //       this.addEnvForProvisioning({ cspName: unclassName, admin: adm });
+      //     }      
+      //   }
+      //   if (admin.hasScrtAccess && admin.scrtEmail && admin.DoDId) {
+      //     const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.scrtEmail};
+      //     this.addEnvForProvisioning({ cspName: scrtName, admin: adm });
+      //   }
+      //   if (admin.hasTSAccess && admin.tsEmail && admin.DoDId) {
+      //     const adm: CSPAdmin = { dodId: admin.DoDId, email: admin.tsEmail};
+      //     this.addEnvForProvisioning({ cspName: tsName, admin: adm });
+      //   }
+      // });
 
       const provisioningPostObj = {
         portfolioName: portfolioName || this.portfolioProvisioningObj.portfolioTitle,
         portfolioAgency: portfolioAgency || this.portfolioProvisioningObj.serviceOrAgency,
         environments: this.envsForProvisioning
       }
+      console.log(provisioningPostObj, 'prov obj')
       await api.edaApi.provisionPortfolio(
         provisioningPostObj,
         this.portfolioProvisioningObj.taskOrderNumber as string,
@@ -516,23 +528,24 @@ export class PortfolioDataStore extends VuexModule {
   }
 
   @Action({rawError: true})
-  public async initProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+  public async initProvisioningFromResponse(data: PortfolioProvisioningObj): Promise<void> {
     await this.doInitProvisioningFromResponse(data);
     await this.setCSPProvisioningData();
   }
 
   @Mutation
-  public async doInitProvisioningFromResponse(data: PortfolioProvisioning): Promise<void> {
+  public async doInitProvisioningFromResponse(data: PortfolioProvisioningObj): Promise<void> {
     this.portfolioProvisioningObj = data;
   }
   
   @Action({rawError: true}) 
-  public async setPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+  public async setPortfolioProvisioning(data: Partial<PortfolioProvisioningObj>): Promise<void> {
     await this.doSetPortfolioProvisioning(data);
   }
 
   @Mutation
-  public async doSetPortfolioProvisioning(data: PortfolioProvisioning): Promise<void> {
+  public async doSetPortfolioProvisioning(data: Partial<PortfolioProvisioningObj>): Promise<void> {
+    debugger;
     this.portfolioProvisioningObj = this.portfolioProvisioningObj
       ? Object.assign(this.portfolioProvisioningObj, data)
       : data; 
@@ -908,7 +921,7 @@ export class PortfolioDataStore extends VuexModule {
     this.showTOPackageSelection = true;
     this.portfolioCreator = {};
     this.selectedAcquisitionPackageSysId = "";
-    this.CSPProvisioningData = [];
+    this.CSPEnvironmentData = [];
     this.CSPHasImpactLevels = false;    
     this.envsForProvisioning = [];
     this.activeTaskOrderNumber = "";

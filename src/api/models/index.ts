@@ -845,6 +845,7 @@ export interface CloudServiceProviderDTO extends BaseTableDTO{
   name:string;
   classification_level?: string;
   cloud_distinguisher?: string;
+  highest_information_protection_level: string;
 }
 
 export interface PortfolioSummarySearchDTO {
