@@ -100,12 +100,12 @@ jobs:
         run: |
             find dist/ -type f > dist/sbom.txt
       - name: Preserve build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: dist/
           name: atat-web-ui
       - name: Preserve test coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: coverage/lcov-report/
           name: lcov-report
